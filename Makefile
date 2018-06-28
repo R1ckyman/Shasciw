@@ -38,7 +38,7 @@ INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_sr
 
 VERSION_MAJOR := 0
-VERSION_MINOR := 5
+VERSION_MINOR := 8
 VERSION_MICRO := 0
 
 APP_TITLE   := 2 Players Game
