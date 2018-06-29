@@ -39,11 +39,11 @@ int main(int argc, char **argv)
   printf("\x1b[2;24H\x1b[32mPress L and R to start the game.\x1b[0m");
   printf("\x1b[4;24H\x1b[33mPress + to return Homebrew menu.\x1b[0m");
   printf("\x1b[11;1H[Input] - Player 1");
-  printf("\x1b[13;1H-%c, %c, %c, %c, to control the character and keyboard [SL to switch caps]",24,25,26,27);
+  printf("\x1b[13;1H-%c, %c, %c, %c, to control the character and keyboard [ZL to switch caps]",24,25,26,27);
   printf("\x1b[15;1H-L to shoot and %c, %c, %c, %c, to select the direction",24,25,26,27);
   printf("\x1b[17;1H-ZR to open inventory and L to use an object");
   printf("\x1b[19;1H[Input] - Player 2");
-  printf("\x1b[21;1H-X,B,A,Y to control the character and keyboard [SR to switch caps]");
+  printf("\x1b[21;1H-X,B,A,Y to control the character and keyboard [ZR to switch caps]");
   printf("\x1b[23;1H-R to shoot and X,B,A,Y to select the direction");
   printf("\x1b[25;1H-ZR to open inventory and R to use an object");
 
@@ -82,10 +82,10 @@ int main(int argc, char **argv)
               game = true;
               name = false;
               consoleClear();
-              printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Player 1---         ");
+              printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Player 1---                ");
               map.printMap();
             }
-            else printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Choosen letter---");
+            else printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Letter already chosen---");
           }
           else keyboard.printKeyboard(player_1);
         }

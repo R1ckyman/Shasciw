@@ -39,7 +39,7 @@ EXEFS_SRC	:=	exefs_sr
 
 VERSION_MAJOR := 0
 VERSION_MINOR := 8
-VERSION_MICRO := 5
+VERSION_MICRO := 7
 
 APP_TITLE   := 2 Players Game
 APP_AUTHOR	:= Rickyman
