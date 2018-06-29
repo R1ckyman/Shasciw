@@ -49,7 +49,7 @@ Map::Map(){
 void Map::modifyPlayer(unsigned position, Player player){
   players[position] = player;
 }
-void Map::printMap(){
+void Map::printMap(bool player_1){
   unsigned i;
   unsigned y;
 
@@ -58,7 +58,7 @@ void Map::printMap(){
 
   printf("\x1b[7;1H");
   for(i=0;i<MAPSIZE;i++){
-    printf("\t\t\t\t\t\t\t");
+    printf("%25s","");
 		for(y=0;y<MAPSIZE;y++){
       if(terrain[i][y] == players[0].getLetter()) printf("\x1b[33m%c\x1b[0m", terrain[i][y]);
       else if(terrain[i][y] == players[1].getLetter()) printf("\x1b[32m%c\x1b[0m", terrain[i][y]);
@@ -69,12 +69,13 @@ void Map::printMap(){
 		}
 		printf("\n");
 	}
+
+  if(player_1) players[0].printStats();
+  else players[1].printStats();
 }
 bool Map::gameProcess(Player &player, bool player_1){
   bool action = false;
   u32 kDown = Input::getInput();
-
-  printf("\x1b[8;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---X: %d Y: %d---",player.getX(),player.getY());
 
   if((!action) && (((kDown & KEY_DUP) && player_1) || ((kDown & KEY_X) && !player_1))){
       if(terrain[player.getY()-1][player.getX()] == ' '){

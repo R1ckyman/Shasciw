@@ -25,21 +25,21 @@ void Player::setY(unsigned y){
 }
 void Player::printStats() const{
   unsigned i;
-  printf("\x1b[8;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|Posicion actual|");
-  printf("\x1b[9;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tX: %d Y: %d",x,y);
-  printf("\x1b[10;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tHealth: %d",healt);
-  printf("\x1b[7;1H--%s\' inventory",name.c_str());
+  printf("\x1b[7;61H|%s's Coords|",name.c_str());
+  printf("\x1b[8;61H|-- X: %d Y: %d --|",x,y);
+  printf("\x1b[7;1H| %s\'s healt: %d/3 |",name.c_str(),healt);
+  printf("\x1b[9;1H| %s\'s inventory |\n",name.c_str());
   for(i=0;i<INVENTORY;i++){
-    printf("\n");
+    printf("\n\n");
     switch(inventory[i]){
       case 0:
-        printf("-Empty           ");
+        printf("-Empty");
         break;
       case 1:
-        printf("-Double movement ");
+        printf("\x1b[33m-Double movement\x1b[0m");
         break;
       default:
-        printf("-Undefined object");
+        printf("\x1b[31m-Undefined object\x1b[0m");
         break;
     }
   }

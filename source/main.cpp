@@ -82,10 +82,9 @@ int main(int argc, char **argv)
               game = true;
               name = false;
               consoleClear();
-              printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Player 1---                ");
-              map.printMap();
+              map.printMap(player_1);
             }
-            else printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Letter already chosen---");
+            else printf("\x1b[7;55H\\|Letter already chosen|/");
           }
           else keyboard.printKeyboard(player_1);
         }
@@ -109,9 +108,7 @@ int main(int argc, char **argv)
           if(player_1) map.modifyPlayer(0,temp_player);
           else map.modifyPlayer(1,temp_player);
           player_1 = !player_1;
-          map.printMap();
-          if(player_1) printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Player 1---");
-          else printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Player 2---");
+          map.printMap(player_1);
         }
     }
     gfxFlushBuffers();
