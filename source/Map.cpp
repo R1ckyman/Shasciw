@@ -6,7 +6,7 @@ Map::Map(){
   Player player_2("Pepito",13,1);
   char map[MAPSIZE][MAPSIZE] = {
   {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-  {'#',' ','o','#','C',' ',' ',' ',' ',' ','#',' ',' ','p','*','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+  {'#',' ','o','#','C',' ',' ',' ',' ',' ','#',' ',' ',' ','*','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
   {'#','M',' ','#',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
   {'#',' ',' ','#','o','#','#','#','#',' ',' ',' ',' ',' ',' ','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
   {'#',' ','#','#','#',' ',' ',' ','M',' ','#','#',' ',' ',' ','D','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
@@ -17,7 +17,7 @@ Map::Map(){
   {'#',' ','#',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
   {'#',' ','#',' ',' ',' ','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
   {'#',' ',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ',' ','o','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-  {'#',' ','P','#',' ','M',' ','#','#','#',' ','#',' ',' ',' ','#',' ',' ',' ','#','#','#','#','#','#','#','#','#','#','#','#','#'},
+  {'#',' ',' ','#',' ','M',' ','#','#','#',' ','#',' ',' ',' ','#',' ',' ',' ','#','#','#','#','#','#','#','#','#','#','#','#','#'},
   {'#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ','#',' ',' ',' ','d',' ',' ','C','#','#','#','#','#','#','#','#','#','#','#','#','#'},
   {'#',' ',' ','#','o',' ',' ',' ','M',' ',' ','#','O',' ',' ','#',' ',' ',' ','#','#','#','#','#','#','#','#','#','#','#','#','#'},
   {'#','#','#','#','#','D','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
@@ -40,31 +40,28 @@ Map::Map(){
   };
   for(i=0;i<MAPSIZE;i++){
     for(y=0;y<MAPSIZE;y++){
-      this->terrain[y][i] = map[i][y];
+      terrain[i][y] = map[i][y];
     }
   }
   players.push_back(player_1);
   players.push_back(player_2);
 }
-
-void Map::printMap(Player player_1, Player player_2){
+void Map::modifyPlayer(unsigned position, Player player){
+  players[position] = player;
+}
+void Map::printMap(){
   unsigned i;
   unsigned y;
-  char letter;
 
+  terrain[players[0].getY()][players[0].getX()] = players[0].getLetter();
+  terrain[players[1].getY()][players[1].getX()] = players[1].getLetter();
+
+  printf("\x1b[7;1H");
   for(i=0;i<MAPSIZE;i++){
     printf("\t\t\t\t\t\t\t");
 		for(y=0;y<MAPSIZE;y++){
-      if(terrain[i][y] == 'P')
-      {
-        letter = player_1.getLetter();
-        printf("\x1b[33m%c\x1b[0m", letter);
-      }
-      else if(terrain[i][y] == 'p')
-      {
-        letter = player_2.getLetter();
-        printf("\x1b[31m%c\x1b[0m", letter);
-      }
+      if(terrain[i][y] == players[0].getLetter()) printf("\x1b[33m%c\x1b[0m", terrain[i][y]);
+      else if(terrain[i][y] == players[1].getLetter()) printf("\x1b[31m%c\x1b[0m", terrain[i][y]);
       else if(terrain[i][y] == '*') printf("\x1b[32m%c\x1b[0m", terrain[i][y]);
       else if(terrain[i][y] == 'B') printf("\x1b[31m%c\x1b[0m", terrain[i][y]);
       else if(terrain[i][y] == 'O' || terrain[i][y] == 'o') printf("\x1b[34m%c\x1b[0m", terrain[i][y]);
@@ -75,36 +72,43 @@ void Map::printMap(Player player_1, Player player_2){
 		printf("\n");
 	}
 }
-bool Map::gameProcess(Player player, bool player_1){
+bool Map::gameProcess(Player &player, bool player_1){
+  bool action = false;
   u32 kDown = Input::getInput();
 
-  if(((kDown & KEY_DUP) && player_1) && ((kDown & KEY_X) && !player_1)){
+  printf("\x1b[8;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---X: %d Y: %d---",player.getX(),player.getY());
+
+  if((!action) && (((kDown & KEY_DUP) && player_1) || ((kDown & KEY_X) && !player_1))){
       if(terrain[player.getY()-1][player.getX()] == ' '){
           terrain[player.getY()][player.getX()] = ' ';
-          terrain[player.getY()-1][player.getX()] = 'P';
-          return true;
+          terrain[player.getY()-1][player.getX()] = player.getLetter();
+          player.setY(player.getY()-1);
+          action = true;
       }
   }
-  if(((kDown & KEY_DDOWN) && player_1) && ((kDown & KEY_B) && !player_1)){
+  if((!action) && (((kDown & KEY_DDOWN) && player_1) || ((kDown & KEY_B) && !player_1))){
     if(terrain[player.getY()+1][player.getX()] == ' '){
       terrain[player.getY()][player.getX()] = ' ';
       terrain[player.getY()+1][player.getX()] = player.getLetter();
-      return true;
+      player.setY(player.getY()+1);
+      action = true;
     }
   }
-  if(((kDown & KEY_DLEFT) && player_1) && ((kDown & KEY_Y) && !player_1)){
+  if((!action) && (((kDown & KEY_DLEFT) && player_1) || ((kDown & KEY_Y) && !player_1))){
     if(terrain[player.getY()][player.getX()-1] == ' '){
       terrain[player.getY()][player.getX()] = ' ';
       terrain[player.getY()][player.getX()-1] = player.getLetter();
-      return true;
+      player.setX(player.getX()-1);
+      action = true;
     }
   }
-  if(((kDown & KEY_DRIGHT) && player_1) && ((kDown & KEY_A) && !player_1)){
+  if((!action) && (((kDown & KEY_DRIGHT) && player_1) || ((kDown & KEY_A) && !player_1))){
     if(terrain[player.getY()][player.getX()+1] == ' '){
       terrain[player.getY()][player.getX()] = ' ';
       terrain[player.getY()][player.getX()+1] = player.getLetter();
-      return true;
+      player.setX(player.getX()+1);
+      action = true;
     }
   }
-  return false;
+  return action;
 }

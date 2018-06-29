@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     char keyboard_2[KEYBOARDSIZE] = {'0','1','2','3','4','5','6','7','8','9',
                                 'a','b','c','d','f','g','h','i','j','k',
                                 'l','m','n','o','p','q','r','s','t','u',
-                                'v','w','x','y','z','#','=','*','?','!'};
+                                'v','w','x','y','z','<','=','*','?','!'};
 
 
     bool r_pressed = false;
@@ -29,7 +29,6 @@ int main(int argc, char **argv)
     bool name = false;
     bool game = false;
     bool player_1 = true;
-    int each_turn = 15;
 
     Map map;
     Keyboard keyboard(keyboard_1);
@@ -61,15 +60,11 @@ int main(int argc, char **argv)
       if(name){
         if(keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
         else keyboard.setKeyboard(keyboard_2);
-        if(!game){
           if(player_1){
             if(keyboard.processKeyboard(player_1)){
-              if(keyboard.getCaps()){
-                map.getPlayer(0).setLetter(keyboard.getCharacter(keyboard.getIndex()));
-              }
-              else{
-                map.getPlayer(0).setLetter(keyboard.getCharacter(keyboard.getIndex()));
-              }
+              temp_player = map.getPlayer(0);
+              temp_player.setLetter(keyboard.getCharacter(keyboard.getIndex()));
+              map.modifyPlayer(0,temp_player);
               keyboard.setCaps(true);
               keyboard.setIndex(0);
               player_1 = false;
@@ -78,25 +73,22 @@ int main(int argc, char **argv)
           }
           else{
             if(keyboard.processKeyboard(player_1)){
-              if(keyboard.getCaps()){
-                map.getPlayer(1).setLetter(keyboard.getCharacter(keyboard.getIndex()));
+              if(keyboard.getCharacter(keyboard.getIndex()) != map.getPlayer(0).getLetter()){
+                temp_player = map.getPlayer(1);
+                temp_player.setLetter(keyboard.getCharacter(keyboard.getIndex()));
+                map.modifyPlayer(1,temp_player);
+                keyboard.setCaps(true);
+                keyboard.setIndex(0);
+                player_1 = true;
+                game = true;
+                name = false;
+                consoleClear();
+                printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Player 1---");
+                map.printMap();
               }
-              else{
-                map.getPlayer(1).setLetter(keyboard.getCharacter(keyboard.getIndex()));
-              }
-              keyboard.setCaps(true);
-              keyboard.setIndex(0);
-              player_1 = true;
-              game = true;
             }
             else keyboard.printKeyboard(player_1);
           }
-        }
-        else{
-          name = false;
-          consoleClear();
-          map.printMap(map.getPlayer(0), map.getPlayer(1));
-        }
       }
       else if(!game){
         if(kDown & KEY_L){
@@ -111,24 +103,16 @@ int main(int argc, char **argv)
         }
       }
       else if(game){
-        if(each_turn <= 0){
-          if(player_1) Player temp_player = map.getPlayer(0);
-          else Player temp_player = map.getPlayer(1);
+          if(player_1) temp_player = map.getPlayer(0);
+          else temp_player = map.getPlayer(1);
           if(map.gameProcess(temp_player, player_1)){
-            each_turn = 5;
-          }
-          if(each_turn == 5){
+            if(player_1) map.modifyPlayer(0,temp_player);
+            else map.modifyPlayer(1,temp_player);
             player_1 = !player_1;
-            map.printMap(map.getPlayer(0), map.getPlayer(1));
-          }
-          else{
+            map.printMap();
             if(player_1) printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Player 1---");
             else printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t---Player 2---");
           }
-        }
-        else{
-          each_turn--;
-        }
       }
     gfxFlushBuffers();
     gfxSwapBuffers();
