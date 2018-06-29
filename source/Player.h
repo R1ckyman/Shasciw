@@ -9,11 +9,11 @@ const unsigned INVENTORY = 10;
 class Player{
     private:
         std::string name;
-        int inventory[INVENTORY];
         char letter;
         int healt;
         int x;
         int y;
+        int inventory[INVENTORY];
     public:
         Player(std::string name, int x, int y);
         char getLetter() const { return letter; };
@@ -21,6 +21,8 @@ class Player{
         int getObject(unsigned i) const{ return inventory[i]; };
         int getX() const { return x; };
         int getY() const { return y; };
+        void setX(unsigned x);
+        void setY(unsigned y);
         void setLetter(char letter);
         void setHealt(int healt);
         void printStats() const;

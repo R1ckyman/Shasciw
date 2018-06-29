@@ -1,12 +1,12 @@
 #include "Player.h"
 
-Player::Player(std::string name,int x, int y){
+Player::Player(std::string name, int x, int y){
   unsigned i;
   this->name = name;
-  letter = 'O';
-  healt = 3;
+  letter = 'A';
   this->x = x;
   this->y = y;
+  healt = 3;
   for(i=0;i<INVENTORY;i++){
     inventory[i] = 0;
   }
@@ -16,6 +16,12 @@ void Player::setLetter(char letter){
 }
 void Player::setHealt(int healt){
   this->healt = healt;
+}
+void Player::setX(unsigned x){
+  this->x = x;
+}
+void Player::setY(unsigned y){
+  this->y = y;
 }
 void Player::printStats() const{
   unsigned i;
