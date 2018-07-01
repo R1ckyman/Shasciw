@@ -23,7 +23,7 @@ void Keyboard::setIndex(int index){
   this->index = index;
 }
 bool Keyboard::processKeyboard(bool player_1){
-  u32 kDown = Input::getInput();
+  u32 kDown = Input::getInputDown();
 
   if(!kDown) return false; // If no key is pressed return
   if(((kDown & KEY_ZL) && player_1) || ((kDown & KEY_ZR) && !player_1)){
@@ -66,26 +66,31 @@ bool Keyboard::processKeyboard(bool player_1){
 }
 void Keyboard::printKeyboard(bool player_1){
   unsigned i;
+  unsigned y = 0;
 
-  if(player_1) printf("\x1b[4;1H\t\t\t\t\t\t\t\t--Choose your letter Player 1--");
-  else printf("\x1b[4;1H\t\t\t\t\t\t\t\t--Choose your letter Player 2--");
-  printf("\x1b[7;1H\t\t\t\t\t\t\t\t\t");
   for(i=0;i<KEYBOARDSIZE;i++){
-      if(caps){
-          if(i == (unsigned)index){
-              printf("\x1b[31m%c \x1b[0m",keyboard[i]);
-          }else{
-              printf("%c ",keyboard[i]);
-          }
-          if(i == 9 || i == 19 || i == 29) printf("\n\t\t\t\t\t\t\t\t\t");
-      }
-      else{
-          if(i == (unsigned)index){
-              printf("\x1b[31m%c \x1b[0m",keyboard[i]);
-          }else{
-              printf("%c ",keyboard[i]);
-          }
-          if(i == 9 || i == 19 || i == 29) printf("\n\t\t\t\t\t\t\t\t\t");
-      }
+    if(i == 0 || i == 10 || i == 20 || i == 30){
+      printf("\x1b[%d;30H",y+10);
+      y +=2;
+    }
+    if(i == index){
+      printf("\x1b[31m%c \x1b[0m",keyboard[i]);
+    }
+    else{
+      printf("%c ",keyboard[i]);
+    }
   }
+}
+void Keyboard::printCurName(bool player_1, char name[8], int name_letters){
+  int i;
+
+  if(player_1) printf("\x1b[4;27H|--Select player 1 name--|");
+  else printf("\x1b[4;27H|--Select player 2 name--|");
+
+  printf("\x1b[6;31H|");
+  for(i=0;i<8;i++){
+    if(i>name_letters) printf(" _");
+    else printf(" %c",name[i]);
+  }
+  printf("\x1b[6;46H |");
 }

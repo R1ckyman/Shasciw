@@ -39,7 +39,7 @@ EXEFS_SRC	:=	exefs_sr
 
 VERSION_MAJOR := 0
 VERSION_MINOR := 9
-VERSION_MICRO := 0
+VERSION_MICRO := 5
 
 APP_TITLE   := Shootbrew
 APP_AUTHOR	:= Rickyman
