@@ -1,8 +1,9 @@
 #include "Player.h"
+#include <cstring>
 
-Player::Player(std::string name, int x, int y){
+Player::Player(char name[9], int x, int y){
   unsigned i;
-  this->name = name;
+  strcpy(this->name, name);
   letter = 'A';
   this->x = x;
   this->y = y;
@@ -10,6 +11,9 @@ Player::Player(std::string name, int x, int y){
   for(i=0;i<INVENTORY;i++){
     inventory[i] = 0;
   }
+}
+void Player::setName(char name[9]){
+  strcpy(this->name, name);
 }
 void Player::setLetter(char letter){
   this->letter = letter;
@@ -23,14 +27,15 @@ void Player::setX(unsigned x){
 void Player::setY(unsigned y){
   this->y = y;
 }
-void Player::printStats() const{
+void Player::printStats(unsigned index) const{
   unsigned i;
-  printf("\x1b[8;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t|Posicion actual|");
-  printf("\x1b[9;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tX: %d Y: %d",x,y);
-  printf("\x1b[10;1H\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\tHealth: %d",healt);
-  printf("\x1b[7;1H--%s\' inventory",name.c_str());
+  printf("\x1b[7;60H|%s's Coords\x1b[7;77H|",name);
+  printf("\x1b[8;60H|- X: %d Y: %d -\x1b[8;77H|",x,y);
+  printf("\x1b[7;1H| %s\'s healt: %d/3 \x1b[7;24H|",name,healt);
+  printf("\x1b[9;1H| %s\'s inventory \x1b[9;24H|",name);
   for(i=0;i<INVENTORY;i++){
-    printf("\n");
+    printf("\n\n\t");
+    if(i == index) printf("\x1b[33m");
     switch(inventory[i]){
       case 0:
         printf("-Empty           ");
@@ -42,5 +47,6 @@ void Player::printStats() const{
         printf("-Undefined object");
         break;
     }
+    printf("\x1b[0m");
   }
 }

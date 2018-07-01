@@ -11,7 +11,7 @@ class Keyboard{
     private:
         char keyboard[KEYBOARDSIZE];
         bool caps;
-        int index;
+        unsigned index;
     public:
         Keyboard(char keyboard[KEYBOARDSIZE]);
         bool getCaps() const { return caps; };
@@ -21,6 +21,7 @@ class Keyboard{
         void setCaps(bool caps);
         void setIndex(int index);
         void printKeyboard(bool player_1);
+        void printCurName(bool player_1, char name[8], int name_letters);
         bool processKeyboard(bool player_1);
 };
 

@@ -13,10 +13,10 @@ class Map{
         std::vector<Player> players;
     public:
         Map();
-        void printMap();
+        void printMap(bool player_1);
         Player getPlayer(unsigned position) const { return players[position]; };
         void modifyPlayer(unsigned position, Player player);
-        bool gameProcess(Player &player, bool player_1);
+        bool gameProcess(Player &player, bool player_1, int &special, int &inventory_index);
 };
 
 #endif
