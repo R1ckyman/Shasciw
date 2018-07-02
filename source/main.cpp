@@ -55,7 +55,7 @@ int main(int argc, char **argv)
   printf("\x1b[17;3H-Move left(Left stick) to delete, move right(Right stick) to space");
   printf("\x1b[19;1H[Game] - Player 1");
   printf("\x1b[21;3H-%c, %c, %c, %c, to control the character",24,25,26,27);
-  printf("\x1b[23;3H-L to shoot and %c, %c, %c, %c, to select the direction",24,25,26,27);
+  printf("\x1b[23;3H-L to select action: shoot/open and %c, %c, %c, %c, to select the direction",24,25,26,27);
   printf("\x1b[25;3H-ZR to open inventory and L to use an object");
   printf("\x1b[27;1H\x1b[33m[Input] - Player 2\x1b[0m");
   printf("\x1b[29;1H[Keyboard] - Player 2");
@@ -64,7 +64,7 @@ int main(int argc, char **argv)
   printf("\x1b[35;3HMove left(Right stick) to delete, move right(Right stick) to space");
   printf("\x1b[37;1H[Game] - Player 2");
   printf("\x1b[39;3H-X,B,A,Y to control the character");
-  printf("\x1b[41;3H-R to shoot and X,B,A,Y to select the direction");
+  printf("\x1b[41;3H-R to select action: shoot/open and X,B,A,Y to select the direction");
   printf("\x1b[43;3H-ZR to open inventory and R to use an object");
 
   // Main loop

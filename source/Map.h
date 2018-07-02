@@ -3,6 +3,7 @@
 
 #include <vector>
 #include "Player.h"
+#include "Door.h"
 #include "Input.h"
 
 const unsigned MAPSIZE = 32;
@@ -11,6 +12,8 @@ class Map{
     private:
         char terrain[MAPSIZE][MAPSIZE];
         std::vector<Player> players;
+        std::vector<Door> doors;
+        int getDoorPosition(unsigned x, unsigned y) const;
     public:
         Map();
         void printMap(bool player_1);

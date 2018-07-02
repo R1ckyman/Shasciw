@@ -39,12 +39,12 @@ EXEFS_SRC	:=	exefs_sr
 
 VERSION_MAJOR := 0
 VERSION_MINOR := 9
-VERSION_MICRO := 5
+VERSION_MICRO := 8
 
 APP_TITLE   := Shootbrew
 APP_AUTHOR	:= Rickyman
 APP_VERSION	:=	${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
-ICON        := icon.jpg
+ICON        := ./res/icon.jpg
 #ROMFS	:=	romfs
 
 #---------------------------------------------------------------------------------
