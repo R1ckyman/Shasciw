@@ -1,6 +1,8 @@
 # Shootbrew
 ===============
-ASCII text game for 2 players, where the objective will be to kill the other player, turn based game, with special objects to help you. (WIP) there are a lot of things that needs to be made yet.
+ASCII text game for 2 players, where the objective will be to kill the other player.
+Turn based game, with special objects to help you.
+(WIP) there are a lot of things that needs to be made yet.
 
 ![](https://github.com/R1ckyman/homebrew-shoot/blob/master/res/Shootbrew_WIP.png)
 
