@@ -56,6 +56,9 @@ Map::Map(){
 void Map::modifyPlayer(unsigned position, Player player){
   players[position] = player;
 }
+void Map::modifyBullet(unsigned position, Bullet bullet){
+  bullets[position] = bullet;
+}
 int Map::getDoorPosition(unsigned x, unsigned y) const{
   unsigned i;
 
@@ -78,6 +81,13 @@ void Map::printMap(bool player_1){
   if(player_1) players[0].printStats(11);
   else players[1].printStats(11);
 
+  for(i=0;i<bullets.size();i++){
+    if(processBullet(i, bullets[i])){
+      terrain[bullets[i].getY()][bullets[i].getX()] = ' ';
+      bullets.erase(bullets.begin()+i);
+    }
+  }
+
   for(i=0;i<MAPSIZE;i++){
     printf("\x1b[%d;26H",i+7);
 		for(y=0;y<MAPSIZE;y++){
@@ -92,8 +102,8 @@ void Map::printMap(bool player_1){
           terrain[i][y] = 'D';
         }
       }
-      else if(i == players[0].getY() && y == players[0].getX()) printf("\x1b[33m%c\x1b[0m", terrain[i][y]);
-      else if(i == players[1].getY() && y == players[1].getX()) printf("\x1b[32m%c\x1b[0m", terrain[i][y]);
+      else if(i == players[0].getY() && y == players[0].getX()) printf("\x1b[33m%c\x1b[0m", players[0].getLetter());
+      else if(i == players[1].getY() && y == players[1].getX()) printf("\x1b[32m%c\x1b[0m", players[1].getLetter());
       else if(terrain[i][y] == '*') printf("\x1b[31m%c\x1b[0m", terrain[i][y]);
       else if(terrain[i][y] == 'O' || terrain[i][y] == 'o') printf("\x1b[35m%c\x1b[0m", terrain[i][y]);
       else if(terrain[i][y] == 'C') printf("\x1b[35m%c\x1b[0m", terrain[i][y]);
@@ -102,7 +112,7 @@ void Map::printMap(bool player_1){
 		printf("\n");
 	}
 }
-bool Map::gameProcess(Player &player, bool player_1, int &special, int &index){
+bool Map::processGame(Player &player, bool player_1, int &special, int &index){
   bool action = false;
   int position;
 
@@ -161,6 +171,12 @@ bool Map::gameProcess(Player &player, bool player_1, int &special, int &index){
           doors[position].setClosed(false);
           action = true;
         }
+        else if(terrain[player.getY()-1][player.getX()] == ' '){
+          terrain[player.getY()][player.getX()] = '*';
+          Bullet temp_bullet(player.getX(), player.getY(), DIR_UP);
+          bullets.push_back(temp_bullet);
+          action = true;
+        }
         break;
       default:
         break;
@@ -184,6 +200,12 @@ bool Map::gameProcess(Player &player, bool player_1, int &special, int &index){
           terrain[player.getY()+1][player.getX()] = '_';
           position = getDoorPosition(player.getY()+1, player.getX());
           doors[position].setClosed(false);
+          action = true;
+        }
+        else if(terrain[player.getY()+1][player.getX()] == ' '){
+          terrain[player.getY()][player.getX()] = '*';
+          Bullet temp_bullet(player.getX(),player.getY(), DIR_DOWN);
+          bullets.push_back(temp_bullet);
           action = true;
         }
         break;
@@ -210,6 +232,12 @@ bool Map::gameProcess(Player &player, bool player_1, int &special, int &index){
           doors[position].setClosed(false);
           action = true;
         }
+        else if(terrain[player.getY()][player.getX()-1] == ' '){
+          terrain[player.getY()][player.getX()] = '*';
+          Bullet temp_bullet(player.getX(), player.getY(), DIR_LEFT);
+          bullets.push_back(temp_bullet);
+          action = true;
+        }
         break;
       default:
         break;
@@ -232,6 +260,12 @@ bool Map::gameProcess(Player &player, bool player_1, int &special, int &index){
           doors[position].setClosed(false);
           action = true;
         }
+        else if(terrain[player.getY()][player.getX()+1] == ' '){
+          terrain[player.getY()][player.getX()] = '*';
+          Bullet temp_bullet(player.getX(), player.getY(), DIR_RIGHT);
+          bullets.push_back(temp_bullet);
+          action = true;
+        }
         break;
       default:
         break;
@@ -240,4 +274,95 @@ bool Map::gameProcess(Player &player, bool player_1, int &special, int &index){
   if(special == 1) player.printStats(index);
   if(action) special = 0;
   return action;
+}
+bool Map::processBullet(unsigned i,Bullet bullet){
+  switch (bullet.getDir()) {
+    case DIR_UP:
+      if(terrain[bullet.getY()-1][bullet.getX()] == ' '){
+        terrain[bullet.getY()-1][bullet.getX()] = '*';
+        terrain[bullet.getY()][bullet.getX()] = ' ';
+        bullet.setY(bullet.getY()-1);
+        modifyBullet(i, bullet);
+      }
+      else if(bullet.getY()-1 == players[0].getY() && bullet.getX() == players[0].getX()){
+        Player temp_player = players[0];
+        temp_player.setHealt(temp_player.getHealt()-1);
+        modifyPlayer(0, temp_player);
+        return true;
+      }
+      else if(bullet.getY()-1 == players[1].getY() && bullet.getX() == players[1].getX()){
+        Player temp_player = players[1];
+        temp_player.setHealt(temp_player.getHealt()-1);
+        modifyPlayer(1, temp_player);
+        return true;
+      }
+      else return true;
+      break;
+    case DIR_DOWN:
+      if(terrain[bullet.getY()+1][bullet.getX()] == ' '){
+        terrain[bullet.getY()+1][bullet.getX()] = '*';
+        terrain[bullet.getY()][bullet.getX()] = ' ';
+        bullet.setY(bullet.getY()+1);
+        modifyBullet(i, bullet);
+      }
+      else if(bullet.getY()+1 == players[0].getY() && bullet.getX() == players[0].getX()){
+        Player temp_player = players[0];
+        temp_player.setHealt(temp_player.getHealt()-1);
+        modifyPlayer(0, temp_player);
+        return true;
+      }
+      else if(bullet.getY()+1 == players[1].getY() && bullet.getX() == players[1].getX()){
+        Player temp_player = players[1];
+        temp_player.setHealt(temp_player.getHealt()-1);
+        modifyPlayer(1, temp_player);
+        return true;
+      }
+      else return true;
+      break;
+    case DIR_RIGHT:
+      if(terrain[bullet.getY()][bullet.getX()+1] == ' '){
+        terrain[bullet.getY()][bullet.getX()+1] = '*';
+        terrain[bullet.getY()][bullet.getX()] = ' ';
+        bullet.setX(bullet.getX()+1);
+        modifyBullet(i, bullet);
+      }
+      else if(bullet.getY() == players[0].getY() && bullet.getX()+1 == players[0].getX()){
+        Player temp_player = players[0];
+        temp_player.setHealt(temp_player.getHealt()-1);
+        modifyPlayer(0, temp_player);
+        return true;
+      }
+      else if(bullet.getY() == players[1].getY() && bullet.getX()+1 == players[1].getX()){
+        Player temp_player = players[1];
+        temp_player.setHealt(temp_player.getHealt()-1);
+        modifyPlayer(1, temp_player);
+        return true;
+      }
+      else return true;
+      break;
+    case DIR_LEFT:
+      if(terrain[bullet.getY()][bullet.getX()-1] == ' '){
+        terrain[bullet.getY()][bullet.getX()-1] = '*';
+        terrain[bullet.getY()][bullet.getX()] = ' ';
+        bullet.setX(bullet.getX()-1);
+        modifyBullet(i, bullet);
+      }
+      else if(bullet.getY() == players[0].getY() && bullet.getX()-1 == players[0].getX()){
+        Player temp_player = players[0];
+        temp_player.setHealt(temp_player.getHealt()-1);
+        modifyPlayer(0, temp_player);
+        return true;
+      }
+      else if(bullet.getY() == players[1].getY() && bullet.getX()-1 == players[1].getX()){
+        Player temp_player = players[1];
+        temp_player.setHealt(temp_player.getHealt()-1);
+        modifyPlayer(1, temp_player);
+        return true;
+      }
+      else return true;
+      break;
+    default:
+      return true;
+  }
+  return false;
 }

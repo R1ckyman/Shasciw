@@ -20,6 +20,7 @@ class Player{
         int getObject(unsigned i) const { return inventory[i]; };
         unsigned getX() const { return x; };
         unsigned getY() const { return y; };
+        char getName(unsigned position) const { return name[position]; };
         void setName(char name[8]);
         void setLetter(char letter);
         void setHealt(int healt);
