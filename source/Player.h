@@ -10,16 +10,16 @@ class Player{
         char name[8];
         char letter;
         int healt;
-        int x;
-        int y;
+        unsigned x;
+        unsigned y;
         int inventory[INVENTORY];
     public:
         Player(char name[8], int x, int y);
         char getLetter() const { return letter; };
         int getHealt() const { return healt; };
         int getObject(unsigned i) const { return inventory[i]; };
-        int getX() const { return x; };
-        int getY() const { return y; };
+        unsigned getX() const { return x; };
+        unsigned getY() const { return y; };
         void setName(char name[8]);
         void setLetter(char letter);
         void setHealt(int healt);

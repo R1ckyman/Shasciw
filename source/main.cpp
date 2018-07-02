@@ -26,6 +26,7 @@ int main(int argc, char **argv)
 
   bool r_pressed = false;
   bool l_pressed = false;
+  bool minus_pressed = false;
   bool letter = false;
   bool name = false;
   bool game = false;
@@ -44,17 +45,27 @@ int main(int argc, char **argv)
   gfxInitDefault();
   consoleInit(NULL);
 
-  printf("\x1b[2;24H\x1b[32mPress L and R to start the game.\x1b[0m");
-  printf("\x1b[4;24H\x1b[32mPress - before L and R to quickplay.\x1b[0m");
-  printf("\x1b[7;24H\x1b[33mPress + to return Homebrew menu.\x1b[0m");
-  printf("\x1b[11;1H[Input] - Player 1");
-  printf("\x1b[13;1H-%c, %c, %c, %c, to control the character and keyboard [ZL to switch caps]",24,25,26,27);
-  printf("\x1b[15;1H-L to shoot and %c, %c, %c, %c, to select the direction",24,25,26,27);
-  printf("\x1b[17;1H-ZR to open inventory and L to use an object");
-  printf("\x1b[19;1H[Input] - Player 2");
-  printf("\x1b[21;1H-X,B,A,Y to control the character and keyboard [ZR to switch caps]");
-  printf("\x1b[23;1H-R to shoot and X,B,A,Y to select the direction");
-  printf("\x1b[25;1H-ZR to open inventory and R to use an object");
+  printf("\x1b[2;24H\x1b[32mPress L and R to start the game\x1b[0m");
+  printf("\x1b[4;24H\x1b[32mPress -, before L and R to quickplay\x1b[0m");
+  printf("\x1b[7;24H\x1b[33mPress + to return Homebrew menu\x1b[0m");
+  printf("\x1b[11;1H\x1b[33m[Input] - Player 1\x1b[0m");
+  printf("\x1b[13;1H[Keyboard] - Player 1");
+  printf("\x1b[15;3H-%c, %c, %c, %c, to control the keyboard",24,25,26,27);
+  printf("\x1b[15;3H-Press L stick to enter the name, ZL to switch caps");
+  printf("\x1b[17;3H-Move left(Left stick) to delete, move right(Right stick) to space");
+  printf("\x1b[19;1H[Game] - Player 1");
+  printf("\x1b[21;3H-%c, %c, %c, %c, to control the character",24,25,26,27);
+  printf("\x1b[23;3H-L to select action: shoot/open and %c, %c, %c, %c, to select the direction",24,25,26,27);
+  printf("\x1b[25;3H-ZR to open inventory and L to use an object");
+  printf("\x1b[27;1H\x1b[33m[Input] - Player 2\x1b[0m");
+  printf("\x1b[29;1H[Keyboard] - Player 2");
+  printf("\x1b[31;3H-X,B,A,Y to control the keyboard");
+  printf("\x1b[33;3H-Press R stick to enter the name, ZR to switch caps");
+  printf("\x1b[35;3HMove left(Right stick) to delete, move right(Right stick) to space");
+  printf("\x1b[37;1H[Game] - Player 2");
+  printf("\x1b[39;3H-X,B,A,Y to control the character");
+  printf("\x1b[41;3H-R to select action: shoot/open and X,B,A,Y to select the direction");
+  printf("\x1b[43;3H-ZR to open inventory and R to use an object");
 
   // Main loop
   while(appletMainLoop())
@@ -174,9 +185,13 @@ int main(int argc, char **argv)
       if(kDown & KEY_R){
         r_pressed = true;
       }
+      if(kDown & KEY_MINUS){
+        minus_pressed = true;
+      }
       if(l_pressed && r_pressed){
         consoleClear();
-        name = true;
+        if(minus_pressed) letter = true;
+        else name = true;
       }
     }
     else if(game){
