@@ -47,6 +47,6 @@ void Player::printStats(unsigned index) const{
         printf("-Undefined object");
         break;
     }
-    printf("\x1b[0m");
+    if(i == index) printf("\x1b[0m");
   }
 }

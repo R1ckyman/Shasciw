@@ -37,9 +37,9 @@ DATA		:=	data
 INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_sr
 
-VERSION_MAJOR := 0
-VERSION_MINOR := 9
-VERSION_MICRO := 8
+VERSION_MAJOR := 1
+VERSION_MINOR := 0
+VERSION_MICRO := 3
 
 APP_TITLE   := Shootbrew
 APP_AUTHOR	:= Rickyman
