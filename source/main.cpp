@@ -36,17 +36,6 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
 }
 int main(int argc, char **argv)
 {
-	/*char keysNames[32][32] = {
-        "KEY_A", "KEY_B", "KEY_X", "KEY_Y",
-        "KEY_LSTICK", "KEY_RSTICK", "KEY_L", "KEY_R",
-        "KEY_ZL", "KEY_ZR", "KEY_PLUS", "KEY_MINUS",
-        "KEY_DLEFT", "KEY_DUP", "KEY_DRIGHT", "KEY_DDOWN",
-        "KEY_LSTICK_LEFT", "KEY_LSTICK_UP", "KEY_LSTICK_RIGHT", "KEY_LSTICK_DOWN",
-        "KEY_RSTICK_LEFT", "KEY_RSTICK_UP", "KEY_RSTICK_RIGHT", "KEY_RSTICK_DOWN",
-        "KEY_SL", "KEY_SR", "KEY_TOUCH", "",
-        "", "", "", ""
-    };
-    */
   char keyboard_1[KEYBOARDSIZE] = {'0','1','2','3','4','5','6','7','8','9',
                               'A','B','C','D','F','G','H','I','J','K',
                               'L','M','N','O','P','Q','R','S','T','U',
@@ -77,10 +66,10 @@ int main(int argc, char **argv)
   Keyboard keyboard(keyboard_1);
   Player temp_player = map.getPlayer(0);
 
-  printMenu(true, player_1_won, map);
-
   gfxInitDefault();
   consoleInit(NULL);
+
+  printMenu(true, player_1_won, map);
 
   // Main loop
   while(appletMainLoop())
@@ -91,7 +80,30 @@ int main(int argc, char **argv)
     u32 kDown = Input::getInputDown();
 
     if (kDown & KEY_PLUS) break; // return Hb menu
-    if(name){
+
+    if(game){
+      if(map.getPlayer(0).getHealt() > 0 || map.getPlayer(1).getHealt() > 0){
+        if(player_1) temp_player = map.getPlayer(0);
+        else temp_player = map.getPlayer(1);
+        if(map.processGame(temp_player, player_1, special, inventory_index, kDown)){
+          if(player_1) map.modifyPlayer(0,temp_player);
+          else map.modifyPlayer(1,temp_player);
+          if(moves <= 0){
+            player_1 = !player_1;
+            moves = 2;
+          }
+          else moves--;
+          map.printMap(player_1);
+        }
+      }
+      else{
+        game = false;
+        finished = true;
+        if(map.getPlayer(0).getHealt() <= 0) player_1_won = false;
+        else player_1_won = true;
+      }
+    }
+    else if(name){
       if(keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
       else keyboard.setKeyboard(keyboard_2);
       if(player_1){
@@ -216,24 +228,7 @@ int main(int argc, char **argv)
         finished = false;
       }
     }
-    else if(game){
-      if(map.getPlayer(0).getHealt() > 0 || map.getPlayer(1).getHealt() > 0){
-        if(player_1) temp_player = map.getPlayer(0);
-        else temp_player = map.getPlayer(1);
-        if(map.processGame(temp_player, player_1, special, inventory_index)){
-          if(player_1) map.modifyPlayer(0,temp_player);
-          else map.modifyPlayer(1,temp_player);
-          if(moves <= 0){
-            player_1 = !player_1;
-            moves = 2;
-          }
-          else moves--;
-          map.printMap(player_1);
-        }
-      }
-      else if(map.getPlayer(0).getHealt() <= 0) player_1_won = false;
-      else player_1_won = true;
-    }
+
     gfxFlushBuffers();
     gfxSwapBuffers();
     gfxWaitForVsync();

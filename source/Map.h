@@ -23,7 +23,7 @@ class Map{
         Player getPlayer(unsigned position) const { return players[position]; };
         void modifyPlayer(unsigned position, Player player);
         void modifyBullet(unsigned position, Bullet bullet);
-        bool processGame(Player &player, bool player_1, int &special, int &inventory_index);
+        bool processGame(Player &player, bool player_1, int &special, int &inventory_index, u32 kDown);
 };
 
 #endif
