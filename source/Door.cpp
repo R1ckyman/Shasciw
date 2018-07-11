@@ -5,9 +5,10 @@ Door::Door(unsigned x, unsigned y){
   this->y = y;
 
   open = false;
-  time = 4;
+  time = 5;
 }
 void Door::setOpen(bool open){
+  if(open == false) time = 5;
   this->open = open;
 }
 void Door::setTime(){
