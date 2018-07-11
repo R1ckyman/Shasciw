@@ -78,8 +78,11 @@ int main(int argc, char **argv)
 
     u64 kDown = Input::getInputDown();
 
+    // If + is pressed
     if (kDown & KEY_PLUS){
-      if(!game) break; // return Hb menu
+      // If the state is not game returns Hb menu
+      if(!game) break;
+      // If the state is game, returns main menu
       else{
         game = false;
         r_pressed = false;
@@ -90,7 +93,7 @@ int main(int argc, char **argv)
         printMenu(true, false, map);
       }
     }
-
+    // Game process
     if(game){
       if(map.getPlayer(player_1).getHealt() > 0 && map.getPlayer(player_1).getHealt() > 0){
         if(player_1) temp_player = map.getPlayer(player_1);
@@ -121,6 +124,7 @@ int main(int argc, char **argv)
         else player_1_won = true;
       }
     }
+    // Choosing name process
     else if(name){
       if(keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
       else keyboard.setKeyboard(keyboard_2);
@@ -188,6 +192,7 @@ int main(int argc, char **argv)
         else keyboard.printKeyboard(player_1);
       }
     }
+    // Choosing letter process
     else if(letter){
       if(keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
       else keyboard.setKeyboard(keyboard_2);
@@ -223,6 +228,7 @@ int main(int argc, char **argv)
         else keyboard.printKeyboard(player_1);
       }
     }
+    // Nothing active process ("Menu")
     else if(!game){
       if(!finished){
         if(kDown & KEY_L){
