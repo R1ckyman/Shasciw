@@ -13,7 +13,7 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
     printf("\x1b[6;2H\x1b[32m--L & R to retry--\x1b[0m");
   }
   printf("\x1b[2;24H\x1b[32mPress L and R to start the game\x1b[0m");
-  printf("\x1b[4;24H\x1b[32mPress -, before L and R to quickplay\x1b[0m");
+  printf("\x1b[4;24H\x1b[31mPress -, before L and R to quickplay\x1b[0m");
   printf("\x1b[7;24H\x1b[33mPress + to return Homebrew menu\x1b[0m");
   printf("\x1b[11;1H\x1b[33m[Input] - Player 1\x1b[0m");
   printf("\x1b[13;1H[Keyboard] - Player 1");
