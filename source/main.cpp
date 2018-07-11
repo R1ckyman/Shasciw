@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     }
 
     if(game){
-      if(map.getPlayer(player_1).getHealt() > 0 || map.getPlayer(player_1).getHealt() > 0){
+      if(map.getPlayer(player_1).getHealt() > 0 && map.getPlayer(player_1).getHealt() > 0){
         if(player_1) temp_player = map.getPlayer(player_1);
         else temp_player = map.getPlayer(player_1);
 
@@ -113,6 +113,10 @@ int main(int argc, char **argv)
       else{
         game = false;
         finished = true;
+        r_pressed = false;
+        l_pressed = false;
+        minus_pressed = false;
+        player_1 = true;
         if(map.getPlayer(player_1).getHealt() <= 0) player_1_won = false;
         else player_1_won = true;
       }
