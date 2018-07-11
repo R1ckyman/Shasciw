@@ -5,15 +5,15 @@ class Door{
     private:
         unsigned x;
         unsigned y;
-        bool closed;
+        bool open;
         unsigned time;
     public:
         Door(unsigned x, unsigned y);
         unsigned getX() const { return x; };
         unsigned getY() const { return y; };
         unsigned getTime() const { return time; };
-        bool getClosed() const { return closed; };
-        void setClosed(bool closed);
+        bool getOpen() const { return open; };
+        void setOpen(bool open);
         void setTime();
 };
 

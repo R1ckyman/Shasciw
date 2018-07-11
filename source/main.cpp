@@ -6,8 +6,8 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
     unsigned i;
     printf("\x1b[1;2H\x1b[31m--- ");
     for(i=0;i<8;i++){
-      if(player_1_won) printf("%c",map.getPlayer(0).getName(i));
-      else printf("%c",map.getPlayer(1).getName(i));
+      if(player_1_won) printf("%c",map.getPlayer(player_1_won).getName(i));
+      else printf("%c",map.getPlayer(player_1_won).getName(i));
     }
     printf(" won---\x1b[0m");
     printf("\x1b[2;2H\x1b[32m---L & R to retry--\x1b[0m");
@@ -59,17 +59,16 @@ int main(int argc, char **argv)
   int name_letters = 0;
   int special = 0;
   int inventory_index = -1;
-  int moves = 2;
   int i;
 
   Map map;
   Keyboard keyboard(keyboard_1);
-  Player temp_player = map.getPlayer(0);
+  Player temp_player = map.getPlayer(player_1);
 
   gfxInitDefault();
   consoleInit(NULL);
 
-  printMenu(true, player_1_won, map);
+  printMenu(true, false, map);
 
   // Main loop
   while(appletMainLoop())
@@ -77,29 +76,44 @@ int main(int argc, char **argv)
     //Scan all the inputs. This should be done once for each frame
     hidScanInput();
 
-    u32 kDown = Input::getInputDown();
+    u64 kDown = Input::getInputDown();
 
-    if (kDown & KEY_PLUS) break; // return Hb menu
+    if (kDown & KEY_PLUS){
+      if(!game) break; // return Hb menu
+      else{
+        game = false;
+        r_pressed = false;
+        l_pressed = false;
+        minus_pressed = false;
+        Map temp_map;
+        map = temp_map;
+        printMenu(true, false, map);
+      }
+    }
 
     if(game){
-      if(map.getPlayer(0).getHealt() > 0 || map.getPlayer(1).getHealt() > 0){
-        if(player_1) temp_player = map.getPlayer(0);
-        else temp_player = map.getPlayer(1);
+      if(map.getPlayer(player_1).getHealt() > 0 || map.getPlayer(player_1).getHealt() > 0){
+        if(player_1) temp_player = map.getPlayer(player_1);
+        else temp_player = map.getPlayer(player_1);
+
         if(map.processGame(temp_player, player_1, special, inventory_index, kDown)){
-          if(player_1) map.modifyPlayer(0,temp_player);
-          else map.modifyPlayer(1,temp_player);
-          if(moves <= 0){
-            player_1 = !player_1;
-            moves = 2;
+          if(temp_player.getMoves() > 0){
+            temp_player.setMoves(temp_player.getMoves()-1);
+            map.modifyPlayer(player_1,temp_player);
           }
-          else moves--;
-          map.printMap(player_1);
+          else {
+            temp_player.setMoves(2);
+            map.modifyPlayer(player_1,temp_player);
+            player_1 = !player_1;
+            temp_player = map.getPlayer(player_1);
+          }
+          map.printMap(temp_player);
         }
       }
       else{
         game = false;
         finished = true;
-        if(map.getPlayer(0).getHealt() <= 0) player_1_won = false;
+        if(map.getPlayer(player_1).getHealt() <= 0) player_1_won = false;
         else player_1_won = true;
       }
     }
@@ -119,9 +133,9 @@ int main(int argc, char **argv)
           }
         }
         if (kDown & KEY_LSTICK){
-          temp_player = map.getPlayer(0);
+          temp_player = map.getPlayer(player_1);
           temp_player.setName(temp_name);
-          map.modifyPlayer(0, temp_player);
+          map.modifyPlayer(player_1, temp_player);
           keyboard.setCaps(true);
           keyboard.setIndex(0);
           player_1 = false;
@@ -150,9 +164,9 @@ int main(int argc, char **argv)
           }
         }
         if (kDown & KEY_RSTICK){
-          temp_player = map.getPlayer(1);
+          temp_player = map.getPlayer(player_1);
           temp_player.setName(temp_name);
-          map.modifyPlayer(1, temp_player);
+          map.modifyPlayer(player_1, temp_player);
           keyboard.setCaps(true);
           keyboard.setIndex(0);
           player_1 = true;
@@ -176,9 +190,9 @@ int main(int argc, char **argv)
       if(player_1){
         printf("\x1b[4;24H--Choose your letter Player 1--");
         if(keyboard.processKeyboard(player_1)){
-            temp_player = map.getPlayer(0);
+            temp_player = map.getPlayer(player_1);
             temp_player.setLetter(keyboard.getCharacter(keyboard.getIndex()));
-            map.modifyPlayer(0,temp_player);
+            map.modifyPlayer(player_1,temp_player);
             keyboard.setCaps(true);
             keyboard.setIndex(0);
             player_1 = false;
@@ -188,19 +202,19 @@ int main(int argc, char **argv)
       else{
         printf("\x1b[4;24H--Choose your letter Player 2--");
         if(keyboard.processKeyboard(player_1)){
-          if(keyboard.getCharacter(keyboard.getIndex()) != map.getPlayer(0).getLetter()){
-            temp_player = map.getPlayer(1);
+          if(keyboard.getCharacter(keyboard.getIndex()) != temp_player.getLetter()){
+            temp_player = map.getPlayer(player_1);
             temp_player.setLetter(keyboard.getCharacter(keyboard.getIndex()));
-            map.modifyPlayer(1,temp_player);
+            map.modifyPlayer(player_1,temp_player);
             keyboard.setCaps(true);
             keyboard.setIndex(0);
             player_1 = true;
             game = true;
             letter = false;
             consoleClear();
-            map.printMap(player_1);
+            map.printMap(map.getPlayer(player_1));
           }
-          else printf("\x1b[7;55H\\|Letter already chosen|/");
+          else printf("\x1b[7;27H\\|Letter already chosen|/");
         }
         else keyboard.printKeyboard(player_1);
       }

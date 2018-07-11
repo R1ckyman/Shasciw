@@ -23,7 +23,7 @@ void Keyboard::setIndex(int index){
   this->index = index;
 }
 bool Keyboard::processKeyboard(bool player_1){
-  u32 kDown = Input::getInputDown();
+  u64 kDown = Input::getInputDown();
 
   if(!kDown) return false; // If no key is pressed return
   if(((kDown & KEY_ZL) && player_1) || ((kDown & KEY_ZR) && !player_1)){

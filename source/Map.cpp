@@ -53,11 +53,16 @@ Map::Map(){
   players.push_back(player_1);
   players.push_back(player_2);
 }
-void Map::modifyPlayer(unsigned position, Player player){
-  players[position] = player;
+void Map::modifyPlayer(bool player_1, Player player){
+  if(player_1) players[0] = player;
+  else players[1] = player;
 }
 void Map::modifyBullet(unsigned position, Bullet bullet){
   bullets[position] = bullet;
+}
+Player Map::getPlayer(bool player_1) const{
+  if(player_1) return players[0];
+  else return players[1];
 }
 int Map::getDoorPosition(unsigned x, unsigned y) const{
   unsigned i;
@@ -69,17 +74,13 @@ int Map::getDoorPosition(unsigned x, unsigned y) const{
   }
   return -1;
 }
-void Map::printMap(bool player_1){
+void Map::printMap(Player player){
   unsigned i;
   unsigned y;
 
   int position;
 
-  terrain[players[0].getY()][players[0].getX()] = players[0].getLetter();
-  terrain[players[1].getY()][players[1].getX()] = players[1].getLetter();
-
-  if(player_1) players[0].printStats(11);
-  else players[1].printStats(11);
+  player.printStats(11);
 
   for(i=0;i<bullets.size();i++){
     if(processBullet(i, bullets[i])){
@@ -87,20 +88,16 @@ void Map::printMap(bool player_1){
       bullets.erase(bullets.begin()+i);
     }
   }
-
   for(i=0;i<MAPSIZE;i++){
     printf("\x1b[%d;26H",i+7);
 		for(y=0;y<MAPSIZE;y++){
       position = getDoorPosition(i, y);
-      if(position != -1 && !doors[position].getClosed()){
-        if((i == players[0].getY() && y == players[0].getX())) printf("\x1b[33m%c\x1b[0m",players[0].getLetter());
-        else if (i == players[1].getY() && y == players[0].getX()) printf("\x1b[32m%c\x1b[0m", players[1].getLetter());
-        else printf("_");
+      if(position != -1 && doors[position].getOpen()){
         doors[position].setTime();
-        if(doors[position].getTime() == 0 && (terrain[i][y] == ' ' || terrain[i][y] == '_')){
-          doors[position].setClosed(true);
-          terrain[i][y] = 'D';
-        }
+        if(doors[position].getTime() == 0 && (player.getX() != doors[position].getX() && player.getY() != doors[position].getY())) doors[position].setOpen(false);
+        if((i == players[0].getY() && y == players[0].getX())) printf("\x1b[33m%c\x1b[0m",players[0].getLetter());
+        else if (i == players[1].getY() && y == players[1].getX()) printf("\x1b[32m%c\x1b[0m", players[1].getLetter());
+        else printf("_");
       }
       else if(i == players[0].getY() && y == players[0].getX()) printf("\x1b[33m%c\x1b[0m", players[0].getLetter());
       else if(i == players[1].getY() && y == players[1].getX()) printf("\x1b[32m%c\x1b[0m", players[1].getLetter());
@@ -111,9 +108,8 @@ void Map::printMap(bool player_1){
 		printf("\n");
 	}
 }
-bool Map::processGame(Player &player, bool player_1, int &special, int &index, u32 kDown){
+bool Map::processGame(Player &player, bool player_1, int &special, int &index, u64 kDown){
   bool action = false;
-  int position;
 
   if(((kDown & KEY_L) && player_1) || ((kDown & KEY_R) && !player_1)){
     switch(special){
@@ -151,9 +147,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
   if((!action) && (((kDown & KEY_DUP) && player_1) || ((kDown & KEY_X) && !player_1))){
     switch (special) {
       case 0:
-        if(terrain[player.getY()-1][player.getX()] == ' ' || terrain[player.getY()-1][player.getX()] == '_'){
-          terrain[player.getY()][player.getX()] = ' ';
-          terrain[player.getY()-1][player.getX()] = player.getLetter();
+        if(terrain[player.getY()-1][player.getX()] == ' ' || (terrain[player.getY()-1][player.getX()] == 'D' && doors[getDoorPosition(player.getY()-1, player.getX())].getOpen())){
           player.setY(player.getY()-1);
           action = true;
         }
@@ -163,9 +157,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
         break;
       case 2:
         if(terrain[player.getY()-1][player.getX()] == 'D'){
-          terrain[player.getY()-1][player.getX()] = '_';
-          position = getDoorPosition(player.getY()-1, player.getX());
-          doors[position].setClosed(false);
+          doors[getDoorPosition(player.getY()-1, player.getX())].setOpen(true);
           action = true;
         }
         else if(terrain[player.getY()-1][player.getX()] == ' '){
@@ -182,21 +174,17 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
   if((!action) && (((kDown & KEY_DDOWN) && player_1) || ((kDown & KEY_B) && !player_1))){
     switch (special) {
       case 0:
-        if(terrain[player.getY()+1][player.getX()] == ' ' || terrain[player.getY()+1][player.getX()] == '_'){
-          terrain[player.getY()][player.getX()] = ' ';
-          terrain[player.getY()+1][player.getX()] = player.getLetter();
+        if(terrain[player.getY()+1][player.getX()] == ' ' || (terrain[player.getY()+1][player.getX()] == 'D' && doors[getDoorPosition(player.getY()+1, player.getX())].getOpen())){
           player.setY(player.getY()+1);
           action = true;
         }
         break;
       case 1:
-        if(index < 10) index++;
+        if(index < 9) index++;
         break;
       case 2:
         if(terrain[player.getY()+1][player.getX()] == 'D'){
-          terrain[player.getY()+1][player.getX()] = '_';
-          position = getDoorPosition(player.getY()+1, player.getX());
-          doors[position].setClosed(false);
+          doors[getDoorPosition(player.getY()+1, player.getX())].setOpen(true);
           action = true;
         }
         else if(terrain[player.getY()+1][player.getX()] == ' '){
@@ -213,9 +201,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
   if((!action) && (((kDown & KEY_DLEFT) && player_1) || ((kDown & KEY_Y) && !player_1))){
     switch (special) {
       case 0:
-        if(terrain[player.getY()][player.getX()-1] == ' ' || terrain[player.getY()][player.getX()-1] == '_' ){
-          terrain[player.getY()][player.getX()] = ' ';
-          terrain[player.getY()][player.getX()-1] = player.getLetter();
+        if(terrain[player.getY()][player.getX()-1] == ' ' || (terrain[player.getY()][player.getX()-1] == 'D' && doors[getDoorPosition(player.getY(), player.getX()-1)].getOpen())){
           player.setX(player.getX()-1);
           action = true;
         }
@@ -224,9 +210,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
         break;
       case 2:
         if(terrain[player.getY()][player.getX()-1] == 'D'){
-          terrain[player.getY()][player.getX()-1] = '_';
-          position = getDoorPosition(player.getY(), player.getX()-1);
-          doors[position].setClosed(false);
+          doors[getDoorPosition(player.getY(), player.getX()-1)].setOpen(true);
           action = true;
         }
         else if(terrain[player.getY()][player.getX()-1] == ' '){
@@ -243,18 +227,14 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
   if((!action) && (((kDown & KEY_DRIGHT) && player_1) || ((kDown & KEY_A) && !player_1))){
     switch (special) {
       case 0:
-        if(terrain[player.getY()][player.getX()+1] == ' ' || terrain[player.getY()][player.getX()+1] == '_'){
-          terrain[player.getY()][player.getX()] = ' ';
-          terrain[player.getY()][player.getX()+1] = player.getLetter();
+        if(terrain[player.getY()][player.getX()+1] == ' ' || (terrain[player.getY()][player.getX()+1] == 'D' && doors[getDoorPosition(player.getY(), player.getX()+1)].getOpen())){
           player.setX(player.getX()+1);
           action = true;
         }
         break;
       case 2:
         if(terrain[player.getY()][player.getX()+1] == 'D'){
-          terrain[player.getY()][player.getX()+1] = '_';
-          position = getDoorPosition(player.getY(), player.getX()+1);
-          doors[position].setClosed(false);
+          doors[getDoorPosition(player.getY(), player.getX()+1)].setOpen(true);
           action = true;
         }
         else if(terrain[player.getY()][player.getX()+1] == ' '){
@@ -268,7 +248,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
         break;
     }
   }
-  if(special == 1) player.printStats(index);
+  if(special == 1 && ((kDown & KEY_DUP) || (kDown & KEY_DDOWN) || (kDown & KEY_X) || (kDown & KEY_B))) player.printStats(index);
   if(action) special = 0;
   return action;
 }

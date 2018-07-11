@@ -39,9 +39,9 @@ EXEFS_SRC	:=	exefs_sr
 
 VERSION_MAJOR := 1
 VERSION_MINOR := 0
-VERSION_MICRO := 3
+VERSION_MICRO := 4
 
-APP_TITLE   := Shootbrew
+APP_TITLE   := Shacibrew
 APP_AUTHOR	:= Rickyman
 APP_VERSION	:=	${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
 ICON        := ./res/icon.jpg
