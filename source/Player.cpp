@@ -8,7 +8,8 @@ Player::Player(char name[9], int x, int y){
   this->x = x;
   this->y = y;
   healt = 3;
-  moves = 2;
+  moves = 3;
+  maxMoves = 3;
   for(i=0;i<INVENTORY;i++){
     inventory[i] = 0;
   }
@@ -30,6 +31,9 @@ void Player::setY(unsigned y){
 }
 void Player::setMoves(unsigned moves){
   this->moves = moves;
+}
+void Player::setMaxMoves(unsigned maxMoves){
+  this->maxMoves = maxMoves;
 }
 void Player::printStats(unsigned index) const{
   unsigned i;
