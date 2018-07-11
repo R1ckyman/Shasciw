@@ -14,6 +14,7 @@ class Player{
         unsigned y;
         int inventory[INVENTORY];
         unsigned moves;
+        unsigned maxMoves;
     public:
         Player(char name[8], int x, int y);
         char getLetter() const { return letter; };
@@ -23,12 +24,14 @@ class Player{
         unsigned getY() const { return y; };
         char getName(unsigned position) const { return name[position]; };
         unsigned getMoves() const { return moves; };
+        unsigned getMaxMoves() const { return maxMoves; };
         void setName(char name[8]);
         void setLetter(char letter);
         void setHealt(int healt);
         void setX(unsigned x);
         void setY(unsigned y);
         void setMoves(unsigned moves);
+        void setMaxMoves(unsigned maxMoves);
         void printStats(unsigned index) const;
 };
 

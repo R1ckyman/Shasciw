@@ -4,13 +4,13 @@
 void printMenu(const bool first_time, const bool player_1_won, const Map map){
   if(!first_time){
     unsigned i;
-    printf("\x1b[1;2H\x1b[31m--- ");
+    printf("\x1b[3;2H\x1b[31m--- ");
     for(i=0;i<8;i++){
       if(player_1_won) printf("%c",map.getPlayer(player_1_won).getName(i));
       else printf("%c",map.getPlayer(player_1_won).getName(i));
     }
     printf(" won---\x1b[0m");
-    printf("\x1b[2;2H\x1b[32m---L & R to retry--\x1b[0m");
+    printf("\x1b[6;2H\x1b[32m--L & R to retry--\x1b[0m");
   }
   printf("\x1b[2;24H\x1b[32mPress L and R to start the game\x1b[0m");
   printf("\x1b[4;24H\x1b[32mPress -, before L and R to quickplay\x1b[0m");
@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     }
 
     if(game){
-      if(map.getPlayer(player_1).getHealt() > 0 || map.getPlayer(player_1).getHealt() > 0){
+      if(map.getPlayer(player_1).getHealt() > 0 && map.getPlayer(player_1).getHealt() > 0){
         if(player_1) temp_player = map.getPlayer(player_1);
         else temp_player = map.getPlayer(player_1);
 
@@ -102,7 +102,7 @@ int main(int argc, char **argv)
             map.modifyPlayer(player_1,temp_player);
           }
           else {
-            temp_player.setMoves(2);
+            temp_player.setMoves(temp_player.getMaxMoves());
             map.modifyPlayer(player_1,temp_player);
             player_1 = !player_1;
             temp_player = map.getPlayer(player_1);
@@ -113,6 +113,10 @@ int main(int argc, char **argv)
       else{
         game = false;
         finished = true;
+        r_pressed = false;
+        l_pressed = false;
+        minus_pressed = false;
+        player_1 = true;
         if(map.getPlayer(player_1).getHealt() <= 0) player_1_won = false;
         else player_1_won = true;
       }
