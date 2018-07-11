@@ -38,10 +38,10 @@ INCLUDES	:=	include
 EXEFS_SRC	:=	exefs_sr
 
 VERSION_MAJOR := 1
-VERSION_MINOR := 0
-VERSION_MICRO := 4
+VERSION_MINOR := 1
+VERSION_MICRO := 1
 
-APP_TITLE   := Shacibrew
+APP_TITLE   := Shasciw
 APP_AUTHOR	:= Rickyman
 APP_VERSION	:=	${VERSION_MAJOR}.${VERSION_MINOR}.${VERSION_MICRO}
 ICON        := ./res/icon.jpg

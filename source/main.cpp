@@ -13,7 +13,7 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
     printf("\x1b[6;2H\x1b[32m--L & R to retry--\x1b[0m");
   }
   printf("\x1b[2;24H\x1b[32mPress L and R to start the game\x1b[0m");
-  printf("\x1b[4;24H\x1b[32mPress -, before L and R to quickplay\x1b[0m");
+  printf("\x1b[4;24H\x1b[31mPress -, before L and R to quickplay\x1b[0m");
   printf("\x1b[7;24H\x1b[33mPress + to return Homebrew menu\x1b[0m");
   printf("\x1b[11;1H\x1b[33m[Input] - Player 1\x1b[0m");
   printf("\x1b[13;1H[Keyboard] - Player 1");
@@ -78,8 +78,11 @@ int main(int argc, char **argv)
 
     u64 kDown = Input::getInputDown();
 
+    // If + is pressed
     if (kDown & KEY_PLUS){
-      if(!game) break; // return Hb menu
+      // If the state is not game returns Hb menu
+      if(!game) break;
+      // If the state is game, returns main menu
       else{
         game = false;
         r_pressed = false;
@@ -90,7 +93,7 @@ int main(int argc, char **argv)
         printMenu(true, false, map);
       }
     }
-
+    // Game process
     if(game){
       if(map.getPlayer(player_1).getHealt() > 0 && map.getPlayer(player_1).getHealt() > 0){
         if(player_1) temp_player = map.getPlayer(player_1);
@@ -121,6 +124,7 @@ int main(int argc, char **argv)
         else player_1_won = true;
       }
     }
+    // Choosing name process
     else if(name){
       if(keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
       else keyboard.setKeyboard(keyboard_2);
@@ -188,6 +192,7 @@ int main(int argc, char **argv)
         else keyboard.printKeyboard(player_1);
       }
     }
+    // Choosing letter process
     else if(letter){
       if(keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
       else keyboard.setKeyboard(keyboard_2);
@@ -223,6 +228,7 @@ int main(int argc, char **argv)
         else keyboard.printKeyboard(player_1);
       }
     }
+    // Nothing active process ("Menu")
     else if(!game){
       if(!finished){
         if(kDown & KEY_L){
