@@ -19,11 +19,11 @@ class Map{
         bool processBullet(unsigned position, Bullet bullet);
     public:
         Map();
-        void printMap(bool player_1);
-        Player getPlayer(unsigned position) const { return players[position]; };
-        void modifyPlayer(unsigned position, Player player);
+        void printMap(Player player);
+        Player getPlayer(bool player_1) const;
+        void modifyPlayer(bool player_1, Player player);
         void modifyBullet(unsigned position, Bullet bullet);
-        bool processGame(Player &player, bool player_1, int &special, int &inventory_index, u32 kDown);
+        bool processGame(Player &player, bool player_1, int &special, int &inventory_index, u64 kDown);
 };
 
 #endif

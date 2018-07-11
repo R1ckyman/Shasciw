@@ -4,11 +4,11 @@ Door::Door(unsigned x, unsigned y){
   this->x = x;
   this->y = y;
 
-  closed = true;
-  time = 3;
+  open = false;
+  time = 4;
 }
-void Door::setClosed(bool closed){
-  this->closed = closed;
+void Door::setOpen(bool open){
+  this->open = open;
 }
 void Door::setTime(){
   if(time > 0) time--;
