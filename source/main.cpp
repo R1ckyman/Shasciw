@@ -18,7 +18,7 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
   printf("\x1b[11;1H\x1b[33m[Input] - Player 1\x1b[0m");
   printf("\x1b[13;1H[Keyboard] - Player 1");
   printf("\x1b[15;3H-%c, %c, %c, %c, to control the keyboard",24,25,26,27);
-  printf("\x1b[15;3H-Press L stick to enter the name, ZL to switch caps");
+  printf("\x1b[15;3H-Move up(Left stick) to enter the name, ZL to switch caps");
   printf("\x1b[17;3H-Move left(Left stick) to delete, move right(Right stick) to space");
   printf("\x1b[19;1H[Game] - Player 1");
   printf("\x1b[21;3H-%c, %c, %c, %c, to control the character",24,25,26,27);
@@ -27,7 +27,7 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
   printf("\x1b[27;1H\x1b[33m[Input] - Player 2\x1b[0m");
   printf("\x1b[29;1H[Keyboard] - Player 2");
   printf("\x1b[31;3H-X,B,A,Y to control the keyboard");
-  printf("\x1b[33;3H-Press R stick to enter the name, ZR to switch caps");
+  printf("\x1b[33;3H-Move up(Right stick) to enter the name, ZR to switch caps");
   printf("\x1b[35;3HMove left(Right stick) to delete, move right(Right stick) to space");
   printf("\x1b[37;1H[Game] - Player 2");
   printf("\x1b[39;3H-X,B,A,Y to control the character");
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
             name_letters++;
           }
         }
-        if (kDown & KEY_LSTICK){
+        if (kDown & KEY_LSTICK_UP){
           temp_player = map.getPlayer(player_1);
           temp_player.setName(temp_name);
           map.modifyPlayer(player_1, temp_player);
@@ -178,7 +178,7 @@ int main(int argc, char **argv)
             name_letters++;
           }
         }
-        if (kDown & KEY_RSTICK){
+        if (kDown & KEY_RSTICK_UP){
           temp_player = map.getPlayer(player_1);
           temp_player.setName(temp_name);
           map.modifyPlayer(player_1, temp_player);
