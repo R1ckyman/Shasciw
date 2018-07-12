@@ -87,10 +87,11 @@ void Keyboard::printCurName(bool player_1, char name[8], int name_letters){
   if(player_1) printf("\x1b[4;27H|--Select player 1 name--|");
   else printf("\x1b[4;27H|--Select player 2 name--|");
 
-  printf("\x1b[6;31H|");
+  // there is a display issue here
+  printf("\x1b[6;30H|");
   for(i=0;i<8;i++){
-    if(i>name_letters) printf(" _");
+    if(i>name_letters) printf(" %c",'_');
     else printf(" %c",name[i]);
   }
-  printf("\x1b[6;46H |");
+  printf("\x1b[6;48H|");
 }

@@ -43,7 +43,7 @@ int main(int argc, char **argv)
   char keyboard_2[KEYBOARDSIZE] = {'0','1','2','3','4','5','6','7','8','9',
                               'a','b','c','d','f','g','h','i','j','k',
                               'l','m','n','o','p','q','r','s','t','u',
-                              'v','w','x','y','z','<','=','*','?','!'};
+                              'v','w','x','y','z','<','=','>','?','!'};
   char temp_name[8] = {'\0','\0','\0','\0','\0','\0','\0','\0'};
 
   bool r_pressed = false;
@@ -131,8 +131,11 @@ int main(int argc, char **argv)
       if(player_1){
         keyboard.printCurName(player_1, temp_name, name_letters);
         if (kDown & KEY_LSTICK_LEFT){
-          name_letters--;
-          temp_name[name_letters] = '\0';
+          if(name_letters > 0){
+            printf("\x1b[8;27H%27c",' ');
+            name_letters--;
+            temp_name[name_letters] = '\0';
+          }
         }
         if (kDown & KEY_LSTICK_RIGHT){
           if(name_letters < 7){
@@ -148,6 +151,7 @@ int main(int argc, char **argv)
           keyboard.setIndex(0);
           player_1 = false;
           name_letters = 0;
+          consoleClear();
           for(i=0;i<8;i++) temp_name[i] = '\0';
         }
         if(keyboard.processKeyboard(player_1)){
@@ -155,15 +159,18 @@ int main(int argc, char **argv)
             temp_name[name_letters] = keyboard.getCharacter(keyboard.getIndex());
             name_letters++;
           }
-          else printf("\x1b[8;46H--Max name length reached--");
+          else printf("\x1b[8;27H--Max name length reached--");
         }
         else keyboard.printKeyboard(player_1);
       }
       else{
         keyboard.printCurName(player_1, temp_name, name_letters);
         if (kDown & KEY_RSTICK_LEFT){
-          name_letters--;
-          temp_name[name_letters] = '\0';
+          if(name_letters > 0){
+            printf("\x1b[8;27H%27c",' ');
+            name_letters--;
+            temp_name[name_letters] = '\0';
+          }
         }
         if (kDown & KEY_LSTICK_RIGHT){
           if(name_letters < 7){
@@ -187,7 +194,7 @@ int main(int argc, char **argv)
             temp_name[name_letters] = keyboard.getCharacter(keyboard.getIndex());
             name_letters++;
           }
-          else printf("\x1b[8;46H--Max name length reached--");
+          else printf("\x1b[8;27H--Max name length reached--");
         }
         else keyboard.printKeyboard(player_1);
       }
