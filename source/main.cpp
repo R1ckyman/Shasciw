@@ -34,6 +34,17 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
   printf("\x1b[41;3H-R to select action: shoot/open and X,B,A,Y to select the direction");
   printf("\x1b[43;3H-ZR to open inventory and R to use an object");
 }
+void gameFinished(bool first_time, bool &game, bool &r_pressed, bool &l_pressed, bool &minus_pressed, bool &player_1, bool player_1_won, Map &map){
+  game = false;
+  r_pressed = false;
+  l_pressed = false;
+  minus_pressed = false;
+  player_1 = true;
+  Map temp_map;
+  map = temp_map;
+  consoleClear();
+  printMenu(first_time, player_1_won, map);
+}
 int main(int argc, char **argv)
 {
   char keyboard_1[KEYBOARDSIZE] = {'0','1','2','3','4','5','6','7','8','9',
@@ -55,12 +66,12 @@ int main(int argc, char **argv)
   bool player_1 = true;
   bool player_1_won = false;
   bool finished = false;
+  bool next_player = false;
 
   int name_letters = 0;
   int special = 0;
   int inventory_index = -1;
   int i;
-
   Map map;
   Keyboard keyboard(keyboard_1);
   Player temp_player = map.getPlayer(player_1);
@@ -84,13 +95,7 @@ int main(int argc, char **argv)
       if(!game) break;
       // If the state is game, returns main menu
       else{
-        game = false;
-        r_pressed = false;
-        l_pressed = false;
-        minus_pressed = false;
-        Map temp_map;
-        map = temp_map;
-        printMenu(true, false, map);
+        gameFinished(true, game, r_pressed, l_pressed, minus_pressed, player_1_won, player_1, map);
       }
     }
     // Game process
@@ -105,23 +110,23 @@ int main(int argc, char **argv)
             map.modifyPlayer(player_1,temp_player);
           }
           else {
+            next_player = true;
+          }
+          map.printMapOptimized(temp_player, player_1);
+          if(next_player){
             temp_player.setMoves(temp_player.getMaxMoves());
+            temp_player.setLastMove(DIR_NULL);
             map.modifyPlayer(player_1,temp_player);
             player_1 = !player_1;
-            temp_player = map.getPlayer(player_1);
+            map.getPlayer(player_1).printStats(11);
+            next_player = false;
           }
-          map.printMap(temp_player);
         }
       }
       else{
-        game = false;
-        finished = true;
-        r_pressed = false;
-        l_pressed = false;
-        minus_pressed = false;
-        player_1 = true;
         if(map.getPlayer(player_1).getHealt() <= 0) player_1_won = false;
         else player_1_won = true;
+        gameFinished(false, game, r_pressed, l_pressed, minus_pressed, player_1, player_1_won, map);
       }
     }
     // Choosing name process
@@ -228,7 +233,7 @@ int main(int argc, char **argv)
             game = true;
             letter = false;
             consoleClear();
-            map.printMap(map.getPlayer(player_1));
+            map.printMapFull(map.getPlayer(player_1));
           }
           else printf("\x1b[7;27H\\|Letter already chosen|/");
         }
