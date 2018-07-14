@@ -18,7 +18,7 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
   printf("\x1b[11;1H\x1b[33m[Input] - Player 1\x1b[0m");
   printf("\x1b[13;1H[Keyboard] - Player 1");
   printf("\x1b[15;3H-%c, %c, %c, %c, to control the keyboard",24,25,26,27);
-  printf("\x1b[15;3H-Press L stick to enter the name, ZL to switch caps");
+  printf("\x1b[15;3H-Move up(Left stick) to enter the name, ZL to switch caps");
   printf("\x1b[17;3H-Move left(Left stick) to delete, move right(Right stick) to space");
   printf("\x1b[19;1H[Game] - Player 1");
   printf("\x1b[21;3H-%c, %c, %c, %c, to control the character",24,25,26,27);
@@ -27,12 +27,23 @@ void printMenu(const bool first_time, const bool player_1_won, const Map map){
   printf("\x1b[27;1H\x1b[33m[Input] - Player 2\x1b[0m");
   printf("\x1b[29;1H[Keyboard] - Player 2");
   printf("\x1b[31;3H-X,B,A,Y to control the keyboard");
-  printf("\x1b[33;3H-Press R stick to enter the name, ZR to switch caps");
+  printf("\x1b[33;3H-Move up(Right stick) to enter the name, ZR to switch caps");
   printf("\x1b[35;3HMove left(Right stick) to delete, move right(Right stick) to space");
   printf("\x1b[37;1H[Game] - Player 2");
   printf("\x1b[39;3H-X,B,A,Y to control the character");
   printf("\x1b[41;3H-R to select action: shoot/open and X,B,A,Y to select the direction");
   printf("\x1b[43;3H-ZR to open inventory and R to use an object");
+}
+void gameFinished(bool first_time, bool &game, bool &r_pressed, bool &l_pressed, bool &minus_pressed, bool &player_1, bool player_1_won, Map &map){
+  game = false;
+  r_pressed = false;
+  l_pressed = false;
+  minus_pressed = false;
+  player_1 = true;
+  Map temp_map;
+  map = temp_map;
+  consoleClear();
+  printMenu(first_time, player_1_won, map);
 }
 int main(int argc, char **argv)
 {
@@ -43,7 +54,7 @@ int main(int argc, char **argv)
   char keyboard_2[KEYBOARDSIZE] = {'0','1','2','3','4','5','6','7','8','9',
                               'a','b','c','d','f','g','h','i','j','k',
                               'l','m','n','o','p','q','r','s','t','u',
-                              'v','w','x','y','z','<','=','*','?','!'};
+                              'v','w','x','y','z','<','=','>','?','!'};
   char temp_name[8] = {'\0','\0','\0','\0','\0','\0','\0','\0'};
 
   bool r_pressed = false;
@@ -55,12 +66,12 @@ int main(int argc, char **argv)
   bool player_1 = true;
   bool player_1_won = false;
   bool finished = false;
+  bool next_player = false;
 
   int name_letters = 0;
   int special = 0;
   int inventory_index = -1;
   int i;
-
   Map map;
   Keyboard keyboard(keyboard_1);
   Player temp_player = map.getPlayer(player_1);
@@ -84,13 +95,7 @@ int main(int argc, char **argv)
       if(!game) break;
       // If the state is game, returns main menu
       else{
-        game = false;
-        r_pressed = false;
-        l_pressed = false;
-        minus_pressed = false;
-        Map temp_map;
-        map = temp_map;
-        printMenu(true, false, map);
+        gameFinished(true, game, r_pressed, l_pressed, minus_pressed, player_1_won, player_1, map);
       }
     }
     // Game process
@@ -105,23 +110,23 @@ int main(int argc, char **argv)
             map.modifyPlayer(player_1,temp_player);
           }
           else {
+            next_player = true;
+          }
+          map.printMapOptimized(temp_player, player_1);
+          if(next_player){
             temp_player.setMoves(temp_player.getMaxMoves());
+            temp_player.setLastMove(DIR_NULL);
             map.modifyPlayer(player_1,temp_player);
             player_1 = !player_1;
-            temp_player = map.getPlayer(player_1);
+            map.getPlayer(player_1).printStats(11);
+            next_player = false;
           }
-          map.printMap(temp_player);
         }
       }
       else{
-        game = false;
-        finished = true;
-        r_pressed = false;
-        l_pressed = false;
-        minus_pressed = false;
-        player_1 = true;
         if(map.getPlayer(player_1).getHealt() <= 0) player_1_won = false;
         else player_1_won = true;
+        gameFinished(false, game, r_pressed, l_pressed, minus_pressed, player_1, player_1_won, map);
       }
     }
     // Choosing name process
@@ -131,8 +136,11 @@ int main(int argc, char **argv)
       if(player_1){
         keyboard.printCurName(player_1, temp_name, name_letters);
         if (kDown & KEY_LSTICK_LEFT){
-          name_letters--;
-          temp_name[name_letters] = '\0';
+          if(name_letters > 0){
+            printf("\x1b[8;27H%27c",' ');
+            name_letters--;
+            temp_name[name_letters] = '\0';
+          }
         }
         if (kDown & KEY_LSTICK_RIGHT){
           if(name_letters < 7){
@@ -140,7 +148,7 @@ int main(int argc, char **argv)
             name_letters++;
           }
         }
-        if (kDown & KEY_LSTICK){
+        if (kDown & KEY_LSTICK_UP){
           temp_player = map.getPlayer(player_1);
           temp_player.setName(temp_name);
           map.modifyPlayer(player_1, temp_player);
@@ -148,6 +156,7 @@ int main(int argc, char **argv)
           keyboard.setIndex(0);
           player_1 = false;
           name_letters = 0;
+          consoleClear();
           for(i=0;i<8;i++) temp_name[i] = '\0';
         }
         if(keyboard.processKeyboard(player_1)){
@@ -155,15 +164,18 @@ int main(int argc, char **argv)
             temp_name[name_letters] = keyboard.getCharacter(keyboard.getIndex());
             name_letters++;
           }
-          else printf("\x1b[8;46H--Max name length reached--");
+          else printf("\x1b[8;27H--Max name length reached--");
         }
         else keyboard.printKeyboard(player_1);
       }
       else{
         keyboard.printCurName(player_1, temp_name, name_letters);
         if (kDown & KEY_RSTICK_LEFT){
-          name_letters--;
-          temp_name[name_letters] = '\0';
+          if(name_letters > 0){
+            printf("\x1b[8;27H%27c",' ');
+            name_letters--;
+            temp_name[name_letters] = '\0';
+          }
         }
         if (kDown & KEY_LSTICK_RIGHT){
           if(name_letters < 7){
@@ -171,7 +183,7 @@ int main(int argc, char **argv)
             name_letters++;
           }
         }
-        if (kDown & KEY_RSTICK){
+        if (kDown & KEY_RSTICK_UP){
           temp_player = map.getPlayer(player_1);
           temp_player.setName(temp_name);
           map.modifyPlayer(player_1, temp_player);
@@ -187,7 +199,7 @@ int main(int argc, char **argv)
             temp_name[name_letters] = keyboard.getCharacter(keyboard.getIndex());
             name_letters++;
           }
-          else printf("\x1b[8;46H--Max name length reached--");
+          else printf("\x1b[8;27H--Max name length reached--");
         }
         else keyboard.printKeyboard(player_1);
       }
@@ -221,7 +233,7 @@ int main(int argc, char **argv)
             game = true;
             letter = false;
             consoleClear();
-            map.printMap(map.getPlayer(player_1));
+            map.printMapFull(map.getPlayer(player_1));
           }
           else printf("\x1b[7;27H\\|Letter already chosen|/");
         }

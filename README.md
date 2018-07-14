@@ -18,7 +18,7 @@ Both joycons are held in vertical (for the moment).
     * DPAD (↑,↓,→,←) to select a letter and L to enter.
     * ZL to select caps, move left the joystick to delete.
     * Move right the joystick to add a space.
-    * Press the joystick to enter name.
+    * Move the joystick up to enter name.
   * [Game]
     * DPAD (↑,↓,→,←) for moving the character.
     * L for action or to use a selected object.
@@ -31,7 +31,7 @@ Both joycons are held in vertical (for the moment).
     * X,B,A,Y to select a letter and R to enter.
     * ZR to select caps, move left the joystick to delete.
     * Move right the joystick to add a space.
-    * Press the joystick to enter name.
+    * Move the joystick up to enter name.
   * [Game]
     * X,B,A,Y for moving the character.
     * R for action or to use a selected object.

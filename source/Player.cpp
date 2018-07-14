@@ -1,7 +1,7 @@
 #include "Player.h"
 #include <cstring>
 
-Player::Player(char name[9], int x, int y){
+Player::Player(char name[9], int x, int y, unsigned id){
   unsigned i;
   strcpy(this->name, name);
   letter = 'A';
@@ -10,6 +10,9 @@ Player::Player(char name[9], int x, int y){
   healt = 3;
   moves = 3;
   maxMoves = 3;
+  last_move = DIR_NULL;
+  this-> id = id;
+  stats_changed = false;
   for(i=0;i<INVENTORY;i++){
     inventory[i] = 0;
   }
@@ -35,9 +38,17 @@ void Player::setMoves(unsigned moves){
 void Player::setMaxMoves(unsigned maxMoves){
   this->maxMoves = maxMoves;
 }
+void Player::setLastMove(Dir dir){
+  last_move = dir;
+}
+void Player::setStatsChanged(bool changed){
+  stats_changed = changed;
+}
+void Player::printInfo() const{
+  printf("\x1b[9;60H->Moves: %u",moves+1);
+}
 void Player::printStats(unsigned index) const{
   unsigned i;
-  printf("\x1b[9;60H->Moves: %u",moves+1);
   printf("\x1b[7;1H| %s\'s healt: %d/3 \x1b[7;24H|",name,healt);
   printf("\x1b[9;1H| %s\'s inventory \x1b[9;24H|",name);
   for(i=0;i<INVENTORY;i++){
