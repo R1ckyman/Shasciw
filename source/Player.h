@@ -2,6 +2,7 @@
 #define _Player_H_
 
 #include <stdio.h>
+#include <vector>
 #include "Bullet.h"
 
 const unsigned INVENTORY = 10;
@@ -14,11 +15,12 @@ class Player{
     int healt;
     unsigned x;
     unsigned y;
-    int inventory[INVENTORY];
+    std::vector<unsigned> inventory;
     unsigned moves;
     unsigned maxMoves;
     Dir last_move;
     bool stats_changed;
+    bool inventory_changed;
   public:
     Player(char name[8], int x, int y, unsigned id);
     char getLetter() const { return letter; };
@@ -31,7 +33,9 @@ class Player{
     unsigned getMaxMoves() const { return maxMoves; };
     Dir getLastMove() const { return last_move; };
     unsigned getId() const { return id; };
-    bool getStatsChanged() const {return stats_changed; };
+    bool getStatsChanged() const { return stats_changed; };
+    bool getInventoryChanged() const { return inventory_changed; };
+    unsigned getInventorySize() const { return inventory.size(); };
     void setName(char name[8]);
     void setLetter(char letter);
     void setHealt(int healt);
@@ -40,9 +44,12 @@ class Player{
     void setMoves(unsigned moves);
     void setMaxMoves(unsigned maxMoves);
     void setLastMove(Dir last_move);
+    bool addObject(unsigned object);
     void printInfo() const;
-    void printStats(unsigned index) const;
+    void printStats() const;
+    void printInventory(unsigned index) const;
     void setStatsChanged(bool changed);
+    void setInventoryChanged(bool changed);
 };
 
 #endif

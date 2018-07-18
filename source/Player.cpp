@@ -2,7 +2,6 @@
 #include <cstring>
 
 Player::Player(char name[9], int x, int y, unsigned id){
-  unsigned i;
   strcpy(this->name, name);
   letter = 'A';
   this->x = x;
@@ -13,9 +12,8 @@ Player::Player(char name[9], int x, int y, unsigned id){
   last_move = DIR_NULL;
   this-> id = id;
   stats_changed = false;
-  for(i=0;i<INVENTORY;i++){
-    inventory[i] = 0;
-  }
+  inventory_changed = false;
+  inventory.push_back(0);
 }
 void Player::setName(char name[9]){
   strcpy(this->name, name);
@@ -44,27 +42,51 @@ void Player::setLastMove(Dir dir){
 void Player::setStatsChanged(bool changed){
   stats_changed = changed;
 }
+void Player::setInventoryChanged(bool changed){
+  inventory_changed = changed;
+}
+bool Player::addObject(unsigned object){
+  if(inventory.size() < INVENTORY){
+    inventory.push_back(object);
+    return true;
+  }
+  return false;
+}
 void Player::printInfo() const{
   printf("\x1b[9;60H->Moves: %u",moves+1);
 }
-void Player::printStats(unsigned index) const{
-  unsigned i;
+void Player::printStats() const{
   printf("\x1b[7;1H| %s\'s healt: %d/3 \x1b[7;24H|",name,healt);
   printf("\x1b[9;1H| %s\'s inventory \x1b[9;24H|",name);
+}
+void Player::printInventory(unsigned index) const{
+  unsigned i;
   for(i=0;i<INVENTORY;i++){
-    printf("\n\n\t");
-    if(i == index) printf("\x1b[33m");
-    switch(inventory[i]){
-      case 0:
-        printf("-Empty           ");
-        break;
-      case 1:
-        printf("-Double movement ");
-        break;
-      default:
-        printf("-Undefined object");
-        break;
+    printf("\x1b[%d;1H", 11+i*2);
+    if(i < getInventorySize()){
+      if(i == index) printf("\x1b[31m");
+      switch(inventory[i]){
+        case 0:
+          printf("-Add 1 move      ");
+          break;
+        case 1:
+          printf("-Add 2 moves     ");
+          break;
+        case 2:
+          printf("-Add 3 moves     ");
+          break;
+        case 3:
+          printf("-[P] Add 1 move  ");
+          break;
+        case 4:
+          printf("-Add 1 damage    ");
+          break;
+        default:
+          printf("-Undefined object");
+          break;
+      }
+      if(i == index) printf("\x1b[0m");
     }
-    if(i == index) printf("\x1b[0m");
+    else printf("                 ");
   }
 }

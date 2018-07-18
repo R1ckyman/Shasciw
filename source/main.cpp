@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 
   int name_letters = 0;
   int special = 0;
-  int inventory_index = -1;
+  unsigned inventory_index = 0;
   int i;
   Map map;
   Keyboard keyboard(keyboard_1);
@@ -116,12 +116,15 @@ int main(int argc, char **argv)
           if(next_player){
             temp_player.setMoves(temp_player.getMaxMoves());
             temp_player.setLastMove(DIR_NULL);
+            temp_player.setInventoryChanged(true);
             map.modifyPlayer(player_1,temp_player);
             player_1 = !player_1;
-            map.getPlayer(player_1).printStats(11);
+            map.getPlayer(player_1).printStats();
+            map.getPlayer(player_1).printInfo();
             next_player = false;
           }
         }
+        else map.modifyPlayer(player_1,temp_player);
       }
       else{
         if(map.getPlayer(player_1).getHealt() <= 0) player_1_won = false;
