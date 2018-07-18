@@ -6,7 +6,9 @@ Shasciw
 
 * ASCII text game for 2 players, where the objective will be to kill the other player.
 * Turn based game, with special objects to help you.
-* (WIP) there are a lot of things that needs to be made yet.
+* (WIP) Objects will be added (hopefully) soon.
+* When the objects are added, i want to make it up to 4 players.
+* And then, to make better controls.
 
 ## Controls (they will probably change soon)
 
