@@ -9,20 +9,20 @@ Map::Map(){
   Player player_2(name_2, 13, 1, 1);
   char map[MAPSIZE][MAPSIZE] = {
   {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
-  {'#','#','#','#','#','o',' ',' ',' ',' ','D',' ',' ',' ','#','#','O',' ',' ','#',' ',' ',' ',' ',' ',' ',' ','#','o','#','#','#'},
+  {'#','#','#','#','#','o',' ',' ',' ',' ','D',' ',' ',' ','#','#','o',' ',' ','#',' ',' ',' ',' ',' ',' ',' ','#','o','#','#','#'},
   {'#','#','#','#','#',' ',' ','#','#','#','#',' ',' ','#','#','#','#',' ',' ',' ',' ',' ',' ','#',' ','#',' ',' ',' ','#','#','#'},
   {'#','#','#','#','#','#','D','#','#','#','#','#',' ','#','o','#','#','#','#','#','#','#','#','#','D','#','#','#','#','#','#','#'},
   {'#','#','#','#','#','#',' ','#','#',' ','o','#',' ','#',' ','D',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
-  {'#','#',' ',' ','D',' ',' ','O','#',' ',' ','D',' ','#',' ','#','#','#','#','#','#','#','#','#','D','#','#','#','#','#',' ','#'},
-  {'#',' ',' ',' ','#','#','#','#','#',' ',' ','#',' ',' ',' ','#','#','#','O',' ',' ','#','#','#',' ','#','#','#','#','#',' ','#'},
+  {'#','o',' ',' ','D',' ',' ','o','#',' ',' ','D',' ','#',' ','#','#','#','#','#','#','#','#','#','D','#','#','#','#','#',' ','#'},
+  {'#',' ',' ',' ','#','#','#','#','#',' ',' ','#',' ',' ',' ','#','#','#','o',' ',' ','#','#','#',' ','#','#','#','#','#',' ','#'},
   {'#',' ',' ',' ',' ','#','#','#','#',' ',' ','#','D','#',' ','#','#','#',' ','#',' ','#','#','#',' ','#','#','o','#','#',' ','#'},
   {'#',' ','#',' ',' ','#',' ',' ',' ',' ',' ',' ',' ','#',' ','#','#','#',' ','#',' ',' ',' ','#',' ','#','#',' ','#','#',' ','#'},
   {'#',' ','#',' ',' ',' ',' ','#',' ',' ',' ',' ',' ','#',' ','#','#','#',' ','#',' ','#',' ','D',' ','D',' ',' ',' ','D',' ','#'},
   {'#',' ','#','#',' ',' ','#','#','#',' ',' ','#','#','#','D','#','#','#','o',' ',' ','#','#','#',' ','#','#',' ','#','#',' ','#'},
-  {'#',' ',' ','D',' ',' ',' ',' ',' ',' ',' ','#',' ',' ','o','#','#','#','#','#','#','#','#','#',' ','#','#','O','#','#',' ','#'},
+  {'#',' ',' ','D',' ',' ',' ',' ',' ',' ',' ','#',' ',' ','o','#','#','#','#','#','#','#','#','#',' ','#','#','o','#','#',' ','#'},
   {'#',' ',' ','#','#','#','#','#','#','#','#','#',' ',' ',' ','#',' ',' ',' ','#','#','#','#','#','D','#','#','#','#','#',' ','#'},
   {'#',' ',' ',' ',' ',' ','#',' ',' ',' ','o','#',' ',' ',' ','D',' ',' ',' ','D',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
-  {'#',' ',' ','#','o',' ','D',' ',' ',' ',' ','#','O',' ',' ','#',' ',' ',' ','#','#','#','#','#','D','#','#','#','#','#',' ','#'},
+  {'#',' ',' ','#','o',' ','D',' ',' ',' ',' ','#','o',' ',' ','#',' ',' ',' ','#','#','#','#','#','D','#','#','#','#','#',' ','#'},
   {'#','#','#','#','#','#','#','#','D','#','#','#','#','#','D','#','#','o','#','#','#','#','#','#',' ','#','#','#','#','#',' ','#'},
   {'#','o','#',' ',' ',' ',' ',' ',' ','#','o',' ','#','#',' ','#','#','#','#','#','#','#','#','#',' ','#','#','#','#','o',' ','#'},
   {'#',' ','#','#',' ','#',' ','#','#','#',' ',' ','#','#',' ','#','#','#','#','o','#','#','#','#',' ','#','#','#','#','#',' ','#'},
@@ -31,19 +31,19 @@ Map::Map(){
   {'#','D','#',' ','#','#',' ',' ','D',' ',' ',' ','#',' ',' ',' ','o','#',' ',' ',' ','#',' ','#','#','#',' ','#','#','#',' ','#'},
   {'#',' ','#',' ',' ','#',' ',' ','#',' ',' ',' ','#',' ','#','#',' ','#','#','D','#','#',' ','#','#','#',' ','#','#','#',' ','#'},
   {'#',' ','#',' ','o','#',' ',' ','#','o',' ',' ','D',' ','o','#',' ','D',' ',' ',' ',' ',' ','#','#','#',' ','D',' ','D',' ','#'},
-  {'#',' ','#','#','#','#','#','#','#','#','#','#','#',' ',' ',' ',' ','#','#','D','#','#',' ','#','#','#',' ','#','#','#',' ','#'},
+  {'#',' ','#','#','#','#','#','#','#','#','#','#','#',' ',' ',' ',' ','#','#','D','#','#',' ','#','#','o',' ','#','#','#',' ','#'},
   {'#',' ',' ',' ','#','#','#','#','#','#','#','#','#',' ',' ',' ',' ','#','#',' ','#','#',' ',' ',' ',' ',' ','#','#','#',' ','#'},
-  {'#','#','#','D','#','#','#','#',' ','#','#','#','#','#','#','D','#','#','#',' ','#','#','#','#','D','#','#','#','#','#',' ','#'},
+  {'#','o','#','D','#','#','#','#',' ','#','#','#','#','#','#','D','#','#','#',' ','#','#','#','#','D','#','#','#','#','#',' ','#'},
   {'#','#',' ',' ','#','#','#','o',' ',' ','#','#','#','#','#',' ','#','#','#',' ','#','#','#','#',' ','#','#','#','#','#',' ','#'},
-  {'#','#',' ',' ','#','#','#','#',' ','#','#','#','#','#','#',' ','#','#','o',' ','o','#','#','#',' ','#','#','#','#','#',' ','#'},
-  {'#','O',' ',' ','#','#','#','#',' ','#','#','#','#','#','#',' ','#','#','#',' ','#','#','#','#',' ','#','#','#','#','#',' ','#'},
-  {'#',' ',' ',' ','#','#','#','#','D','#','#','#','#','#','#',' ','#','#','#','D','#','#','#','#','D','#','#','#','#','#',' ','#'},
+  {'#',' ',' ',' ','#','#','#','#',' ','#','#','#','#','#','#',' ','#','#','o',' ','o','#','#','#',' ','#','#',' ',' ',' ',' ','#'},
+  {'#',' ',' ',' ','#','#','#','#',' ','#','#','#','#','#','#',' ','#','#','#',' ','#','#','#','#',' ','#','#',' ',' ','#','#','#'},
+  {'#',' ',' ',' ','#','o','#','#','D','#','#','#','#','#','#',' ','#','#','#','D','#','#','#','#','D','#','#','#',' ','#','o','#'},
   {'#','#',' ',' ','D',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ','#'},
   {'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'}
   };
   // Random class
   std::mt19937 mt(time(NULL));
-	std::uniform_int_distribution<unsigned> distribution(0,2);
+	std::uniform_int_distribution<unsigned> distribution(0,4);
   for(i=0;i<MAPSIZE;i++){
     for(y=0;y<MAPSIZE;y++){
       terrain[i][y] = map[i][y];
@@ -51,7 +51,7 @@ Map::Map(){
         Door door(i, y);
         doors.push_back(door);
       }
-      if(terrain[i][y] == 'o' || terrain[i][y] == 'O'){
+      if(terrain[i][y] == 'o'){
         unsigned id = distribution(mt);
         Object object(i, y, id);
         objects.push_back(object);
@@ -83,6 +83,16 @@ int Map::getDoorPosition(unsigned x, unsigned y) const{
   }
   return -1;
 }
+int Map::getObjectPosition(unsigned x, unsigned y) const{
+  unsigned i;
+
+  for (i = 0; i < objects.size(); i++) {
+    if(objects[i].getX() == x && objects[i].getY() == y){
+      return i;
+    }
+  }
+  return -1;
+}
 void Map::printMapOptimized(Player player, bool player_1){
   unsigned i;
 
@@ -91,7 +101,7 @@ void Map::printMapOptimized(Player player, bool player_1){
   player.printInfo();
   if(player.getStatsChanged()){
     player.setStatsChanged(false);
-    player.printStats(11);
+    player.printStats();
   }
   //Player control
   if(player_1) printf("\x1b[33m");
@@ -123,6 +133,7 @@ void Map::printMapOptimized(Player player, bool player_1){
   for(i=0;i<bullets.size();i++){
     if(processBullet(i, bullets[i])){
       bullets.erase(bullets.begin()+i);
+      i--;
     }
     else{
       printf("\x1b[%d;%dH*", bullets[i].getY()+7,bullets[i].getX()+26);
@@ -159,7 +170,9 @@ void Map::printMapFull(Player player){
 		}
 		printf("\n");
 	}
-  player.printStats(11);
+  player.printStats();
+  player.printInventory(11);
+  player.printInfo();
 }
 bool Map::processMovement(Player &player, Dir dir){
   bool movement = false;
@@ -172,6 +185,17 @@ bool Map::processMovement(Player &player, Dir dir){
         player.setLastMove(DIR_UP);
         movement = true;
       }
+      else if(terrain[player.getY()-1][player.getX()] == 'o'){
+        int position = getObjectPosition(player.getY()-1, player.getX());
+        if(player.addObject(objects[position].getId())){
+          objects.erase(objects.begin() + position);
+          terrain[player.getY()][player.getX()] = ' ';
+          player.setY(player.getY()-1);
+          player.setLastMove(DIR_UP);
+          player.setInventoryChanged(true);
+          movement = true;
+        }
+      }
       break;
     case DIR_DOWN:
       if(terrain[player.getY()+1][player.getX()] == ' ' || (terrain[player.getY()+1][player.getX()] == 'D' && doors[getDoorPosition(player.getY()+1, player.getX())].getOpen())){
@@ -180,6 +204,17 @@ bool Map::processMovement(Player &player, Dir dir){
         player.setY(player.getY()+1);
         player.setLastMove(DIR_DOWN);
         movement = true;
+      }
+      else if(terrain[player.getY()+1][player.getX()] == 'o'){
+        int position = getObjectPosition(player.getY()+1, player.getX());
+        if(player.addObject(objects[position].getId())){
+          objects.erase(objects.begin() + position);
+          terrain[player.getY()][player.getX()] = ' ';
+          player.setY(player.getY()+1);
+          player.setLastMove(DIR_DOWN);
+          player.setInventoryChanged(true);
+          movement = true;
+        }
       }
       break;
     case DIR_LEFT:
@@ -190,6 +225,17 @@ bool Map::processMovement(Player &player, Dir dir){
         player.setLastMove(DIR_LEFT);
         movement = true;
       }
+      else if(terrain[player.getY()][player.getX()-1] == 'o'){
+        int position = getObjectPosition(player.getY(), player.getX()-1);
+        if(player.addObject(objects[position].getId())){
+          objects.erase(objects.begin() + position);
+          terrain[player.getY()][player.getX()] = ' ';
+          player.setX(player.getX()-1);
+          player.setLastMove(DIR_LEFT);
+          player.setInventoryChanged(true);
+          movement = true;
+        }
+      }
       break;
     case DIR_RIGHT:
       if(terrain[player.getY()][player.getX()+1] == ' ' || (terrain[player.getY()][player.getX()+1] == 'D' && doors[getDoorPosition(player.getY(), player.getX()+1)].getOpen())){
@@ -199,13 +245,24 @@ bool Map::processMovement(Player &player, Dir dir){
         player.setLastMove(DIR_RIGHT);
         movement = true;
       }
+      else if(terrain[player.getY()][player.getX()+1] == 'o'){
+        int position = getObjectPosition(player.getY(), player.getX()+1);
+        if(player.addObject(objects[position].getId())){
+          objects.erase(objects.begin() + position);
+          terrain[player.getY()][player.getX()] = ' ';
+          player.setX(player.getX()+1);
+          player.setLastMove(DIR_RIGHT);
+          player.setInventoryChanged(true);
+          movement = true;
+        }
+      }
       break;
     default:
       break;
   }
   return movement;
 }
-bool Map::processGame(Player &player, bool player_1, int &special, int &index, u64 kDown){
+bool Map::processGame(Player &player, bool player_1, int &special, unsigned &index, u64 kDown){
   bool action = false;
   bool movement = false;
 
@@ -230,16 +287,13 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
   if((!action) && (((kDown & KEY_ZL) && player_1) || ((kDown & KEY_ZR) && !player_1))){
     switch (special) {
       case 0:
+        player.setInventoryChanged(true);
         special = 1;
         index = 0;
         break;
       case 1:
         special = 0;
-        player.printStats(11);
-        break;
-      case 2:
-        special = 1;
-        index = 0;
+        player.printInventory(11);
         break;
       default:
         break;
@@ -252,7 +306,10 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
         movement = processMovement(player, DIR_UP);
         break;
       case 1:
-        if(index > 0) index--;
+        if(index > 0){
+          index--;
+          player.setInventoryChanged(true);
+        }
         break;
       case 2:
         position = getDoorPosition(player.getY()-1, player.getX());
@@ -276,7 +333,10 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
         movement = processMovement(player, DIR_DOWN);
         break;
       case 1:
-        if(index < 9) index++;
+        if(index < player.getInventorySize()-1){
+          player.setInventoryChanged(true);
+          index++;
+        }
         break;
       case 2:
         position = getDoorPosition(player.getY()+1, player.getX());
@@ -339,13 +399,17 @@ bool Map::processGame(Player &player, bool player_1, int &special, int &index, u
     }
   }
 
-  if(special == 1 && ((kDown & KEY_DUP) || (kDown & KEY_DDOWN) || (kDown & KEY_X) || (kDown & KEY_B))) player.printStats(index);
+  if(player.getInventoryChanged()) {
+    player.setInventoryChanged(false);
+    if(special != 1) index = 11;
+    player.printInventory(index);
+  }
   if(!movement) player.setLastMove(DIR_NULL);
   if(action || movement) special = 0;
 
   switch(special){
     case 0:
-      printf("\x1b[7;60H|Normal movement|");
+      printf("\x1b[7;60H|Normal movement| ");
       break;
     case 1:
       printf("\x1b[7;60H\x1b[32m|Inventory opened|\x1b[0m");
@@ -366,11 +430,11 @@ void Map::playerHit(bool player_1, Bullet bullet){
   modifyPlayer(player_1, temp_player);
 }
 bool Map::processBullet(unsigned i, Bullet bullet){
-  if(bullet.getPlayer() != 0 && players[0].getY() == bullet.getY() && players[0].getY() == bullet.getY()){
+  if(bullet.getPlayer() != 0 && players[0].getY() == bullet.getY() && players[0].getX() == bullet.getX()){
     playerHit(true, bullet);
     return true;
   }
-  else if (bullet.getPlayer() != 1 && players[1].getY() == bullet.getY() && players[1].getY() == bullet.getY()){
+  else if (bullet.getPlayer() != 1 && players[1].getY() == bullet.getY() && players[1].getX() == bullet.getX()){
     playerHit(false, bullet);
     return true;
   }
