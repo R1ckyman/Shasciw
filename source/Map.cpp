@@ -366,11 +366,11 @@ void Map::playerHit(bool player_1, Bullet bullet){
   modifyPlayer(player_1, temp_player);
 }
 bool Map::processBullet(unsigned i, Bullet bullet){
-  if(bullet.getPlayer() != 0 && players[0].getY() == bullet.getY() && players[0].getY() == bullet.getY()){
+  if(bullet.getPlayer() != 0 && players[0].getY() == bullet.getY() && players[0].getX() == bullet.getX()){
     playerHit(true, bullet);
     return true;
   }
-  else if (bullet.getPlayer() != 1 && players[1].getY() == bullet.getY() && players[1].getY() == bullet.getY()){
+  else if (bullet.getPlayer() != 1 && players[1].getY() == bullet.getY() && players[1].getX() == bullet.getX()){
     playerHit(false, bullet);
     return true;
   }
