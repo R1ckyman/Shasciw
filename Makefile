@@ -30,7 +30,7 @@ include $(DEVKITPRO)/libnx/switch_rules
 #     - icon.jpg
 #     - <libnx folder>/default_icon.jpg
 #---------------------------------------------------------------------------------
-TARGET		:=	r2pg
+TARGET		:=	Shasciw
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
