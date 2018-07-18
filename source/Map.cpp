@@ -123,6 +123,7 @@ void Map::printMapOptimized(Player player, bool player_1){
   for(i=0;i<bullets.size();i++){
     if(processBullet(i, bullets[i])){
       bullets.erase(bullets.begin()+i);
+      i--;
     }
     else{
       printf("\x1b[%d;%dH*", bullets[i].getY()+7,bullets[i].getX()+26);
