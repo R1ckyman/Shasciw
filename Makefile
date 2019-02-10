@@ -34,7 +34,7 @@ TARGET		:=	Shasciw
 BUILD		:=	build
 SOURCES		:=	source
 DATA		:=	data
-INCLUDES	:=	include
+INCLUDES	:=	source/libs
 EXEFS_SRC	:=	exefs_sr
 
 VERSION_MAJOR := 1
