@@ -3,9 +3,9 @@
 
 #include <switch.h>
 
-class Input{
-    public:
-      static u32 getInputDown() { return hidKeysDown(CONTROLLER_P1_AUTO); };
+class Input {
+public:
+	static u32 getInputDown() { return hidKeysDown(CONTROLLER_P1_AUTO); };
 };
 
 #endif
