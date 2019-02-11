@@ -38,8 +38,8 @@ INCLUDES	:=	source/libs
 EXEFS_SRC	:=	exefs_sr
 
 VERSION_MAJOR := 1
-VERSION_MINOR := 2
-VERSION_MICRO := 5
+VERSION_MINOR := 3
+VERSION_MICRO := 0
 
 APP_TITLE   := Shasciw
 APP_AUTHOR	:= Rickyman
