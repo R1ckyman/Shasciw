@@ -1,22 +1,23 @@
 #include "Player.h"
 #include <cstring>
 
-Player::Player(char name[9], int x, int y, unsigned id) {
+Player::Player(char name[8], int x, int y, unsigned id) {
 	strcpy(this->name, name);
-	letter = 'A';
+	letter = id + '0';
 	this->x = x;
 	this->y = y;
-	healt = 3;
-	moves = 3;
-	maxMoves = 3;
+	healt = 5;
+	moves = 4;
+	maxMoves = 4;
 	damage = 1;
 	last_move = DIR_NULL;
 	this->id = id;
 	stats_changed = false;
 	inventory_changed = false;
 	inventory.push_back(0);
+	inventory.push_back(1);
 }
-void Player::setName(char name[9]) {
+void Player::setName(char name[8]) {
 	strcpy(this->name, name);
 }
 void Player::setLetter(char letter) {
@@ -57,11 +58,29 @@ bool Player::addObject(unsigned object) {
 	return false;
 }
 void Player::printInfo() const {
-	printf("\x1b[9;60H->Moves: %u", moves + 1);
+	printf("\x1b[10;60H" ANSI_COLOR_GREEN "->Moves: %u" ANSI_COLOR_RESET, moves + 1);
 }
 void Player::printStats() const {
-	printf("\x1b[7;1H| %s\'s healt: %d/3 \x1b[7;24H|", name, healt);
-	printf("\x1b[9;1H| %s\'s inventory \x1b[9;24H|", name);
+	// Player name
+	printf("\x1b[7;2H| -----");
+	switch (id) {
+	case 0:
+		printf(ANSI_COLOR_BOLDYELLOW);
+		break;
+	case 1:
+		printf(ANSI_COLOR_BOLDGREEN);
+		break;
+	default:
+		printf(ANSI_COLOR_BOLDYELLOW);
+		break;
+	}
+	printf(" %s " ANSI_COLOR_RESET "\x1b[7;18H----- |", name);
+	// Inventory text
+	printf("\x1b[9;2H| Inventory: %lu objects\x1b[9;24H|", inventory.size());
+	// Healt
+	printf("\x1b[13;60H" ANSI_COLOR_BOLDRED "->Healt: %d", healt);
+	// Damage
+	printf("\x1b[15;60H" ANSI_COLOR_RED "->Damage: %u" ANSI_COLOR_RESET, damage);
 }
 void Player::removeObject(unsigned object) {
 	for (unsigned i = 0;i < inventory.size();i++)
@@ -78,9 +97,9 @@ unsigned Player::getObject(unsigned index) {
 void Player::printInventory(unsigned index) const {
 	unsigned i;
 	for (i = 0;i < INVENTORY;i++) {
-		printf("\x1b[%d;1H", 11 + i * 2);
+		printf("\x1b[%d;3H", 11 + i * 2);
 		if (i < getInventorySize()) {
-			if (i == index) printf("\x1b[31m");
+			if (i == index) printf(ANSI_COLOR_BOLDRED);
 			switch (inventory[i]) {
 			case 0:
 				printf("-Add 1 move      ");
@@ -101,7 +120,7 @@ void Player::printInventory(unsigned index) const {
 				printf("-Undefined object");
 				break;
 			}
-			if (i == index) printf("\x1b[0m");
+			if (i == index) printf(ANSI_COLOR_RESET);
 		}
 		else printf("                 ");
 	}

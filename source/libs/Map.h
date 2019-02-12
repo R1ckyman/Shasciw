@@ -20,17 +20,17 @@ private:
 	int getDoorPosition(unsigned x, unsigned y) const;
 	int getObjectPosition(unsigned x, unsigned y) const;
 	bool processBullet(unsigned i, Bullet bullet);
-	void playerHit(bool player_1, Bullet bullet);
+	void playerHit(unsigned player, Bullet bullet);
 public:
 	Map();
 	void printMapFull(Player player);
-	void printMapOptimized(Player player, bool player_1);
-	Player getPlayer(bool player_1) const;
+	void printMapOptimized(Player player);
+	Player getPlayer(unsigned player) const;
 	Object getObject(unsigned i) const { return objects[i]; };
-	void modifyPlayer(bool player_1, Player player);
+	void modifyPlayer(unsigned player_index, Player player);
 	void modifyBullet(unsigned position, Bullet bullet);
 	bool processMovement(Player &player, Dir dir);
-	bool processGame(Player &player, bool player_1, int &special, unsigned &inventory_index, u64 kDown);
+	bool processGame(Player &player, int &special, unsigned &inventory_index, u64 kDown);
 };
 
 #endif

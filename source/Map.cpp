@@ -62,16 +62,30 @@ Map::Map() {
 	players.push_back(player_1);
 	players.push_back(player_2);
 }
-void Map::modifyPlayer(bool player_1, Player player) {
-	if (player_1) players[0] = player;
-	else players[1] = player;
+void Map::modifyPlayer(unsigned player_index, Player player) {
+	switch (player_index)
+	{
+	case 0:
+		players[0] = player;
+		break;
+	default:
+		players[1] = player;
+		break;
+	}
 }
 void Map::modifyBullet(unsigned position, Bullet bullet) {
 	bullets[position] = bullet;
 }
-Player Map::getPlayer(bool player_1) const {
-	if (player_1) return players[0];
-	else return players[1];
+Player Map::getPlayer(unsigned player) const {
+	switch (player)
+	{
+	case 0:
+		return players[0];
+		break;
+	default:
+		return players[1];
+		break;
+	}
 }
 int Map::getDoorPosition(unsigned x, unsigned y) const {
 	unsigned i;
@@ -93,7 +107,7 @@ int Map::getObjectPosition(unsigned x, unsigned y) const {
 	}
 	return -1;
 }
-void Map::printMapOptimized(Player player, bool player_1) {
+void Map::printMapOptimized(Player player) {
 	unsigned i;
 
 	terrain[player.getY()][player.getX()] = player.getLetter();
@@ -101,8 +115,14 @@ void Map::printMapOptimized(Player player, bool player_1) {
 	player.printInfo();
 
 	//Player control
-	if (player_1) printf("\x1b[33m");
-	else printf("\x1b[32m");
+	switch (player.getId()) {
+	case 0:
+		printf(ANSI_COLOR_BOLDYELLOW);
+		break;
+	default:
+		printf(ANSI_COLOR_BOLDGREEN);
+		break;
+	}
 	switch (player.getLastMove()) {
 	case DIR_UP:
 		printf("\x1b[%d;%dH%c", player.getY() + 7, player.getX() + 26, player.getLetter());
@@ -124,9 +144,8 @@ void Map::printMapOptimized(Player player, bool player_1) {
 		printf("\x1b[%d;%dH%c", player.getY() + 7, player.getX() + 26, player.getLetter());
 		break;
 	}
-	printf("\x1b[0m");
 	// Bullet control
-	printf("\x1b[31m");
+	printf(ANSI_COLOR_BOLDRED);
 	for (i = 0;i < bullets.size();i++) {
 		if (processBullet(i, bullets[i])) {
 			bullets.erase(bullets.begin() + i);
@@ -136,7 +155,7 @@ void Map::printMapOptimized(Player player, bool player_1) {
 			printf("\x1b[%d;%dH*", bullets[i].getY() + 7, bullets[i].getX() + 26);
 		}
 	}
-	printf("\x1b[0m");
+	printf(ANSI_COLOR_MAGENTA);
 	//Door control
 	for (i = 0;i < doors.size();i++) {
 		if (doors[i].getOpen()) {
@@ -150,6 +169,7 @@ void Map::printMapOptimized(Player player, bool player_1) {
 			}
 		}
 	}
+	printf(ANSI_COLOR_RESET);
 }
 void Map::printMapFull(Player player) {
 	unsigned i;
@@ -160,9 +180,10 @@ void Map::printMapFull(Player player) {
 	for (i = 0;i < MAPSIZE;i++) {
 		printf("\x1b[%d;26H", i + 7);
 		for (y = 0;y < MAPSIZE;y++) {
-			if (i == players[0].getY() && y == players[0].getX()) printf("\x1b[33m%c\x1b[0m", players[0].getLetter());
-			else if (i == players[1].getY() && y == players[1].getX()) printf("\x1b[32m%c\x1b[0m", players[1].getLetter());
-			else if (terrain[i][y] == 'O' || terrain[i][y] == 'o') printf("\x1b[35m%c\x1b[0m", terrain[i][y]);
+			if (i == players[0].getY() && y == players[0].getX()) printf(ANSI_COLOR_BOLDYELLOW "%c" ANSI_COLOR_RESET, players[0].getLetter());
+			else if (i == players[1].getY() && y == players[1].getX()) printf(ANSI_COLOR_BOLDGREEN "%c" ANSI_COLOR_RESET, players[1].getLetter());
+			else if (terrain[i][y] == 'O' || terrain[i][y] == 'o') printf(ANSI_COLOR_CYAN "%c" ANSI_COLOR_RESET, terrain[i][y]);
+			else if (terrain[i][y] == 'D') printf(ANSI_COLOR_MAGENTA "%c" ANSI_COLOR_RESET, terrain[i][y]);
 			else printf("%c", terrain[i][y]);
 		}
 		printf("\n");
@@ -259,14 +280,14 @@ bool Map::processMovement(Player &player, Dir dir) {
 	}
 	return movement;
 }
-bool Map::processGame(Player &player, bool player_1, int &special, unsigned &index, u64 kDown) {
+bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) {
 	bool action = false;
 	bool movement = false;
 
 	int position;
 
 	//Specials keys
-	if (((kDown & KEY_L) && player_1) || ((kDown & KEY_R) && !player_1)) {
+	if (((kDown & KEY_L) && player.getId() == 0) || ((kDown & KEY_R) && player.getId() == 1)) {
 		switch (special) {
 		case 0:
 			special = 2;
@@ -304,7 +325,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, unsigned &ind
 		}
 	}
 	// Open close inventory (ZL & ZR)
-	if ((!action) && (((kDown & KEY_ZL) && player_1) || ((kDown & KEY_ZR) && !player_1))) {
+	if ((!action) && (((kDown & KEY_ZL) && player.getId() == 0) || ((kDown & KEY_ZR) && player.getId() == 1))) {
 		switch (special) {
 		case 0:
 			player.setInventoryChanged(true);
@@ -321,7 +342,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, unsigned &ind
 	}
 	//Directions
 	// Up
-	if ((!action) && (((kDown & KEY_DUP) && player_1) || ((kDown & KEY_X) && !player_1))) {
+	if ((!action) && (((kDown & KEY_DUP) && player.getId() == 0) || ((kDown & KEY_X) && player.getId() == 1))) {
 		switch (special) {
 		case 0:
 			movement = processMovement(player, DIR_UP);
@@ -349,7 +370,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, unsigned &ind
 		}
 	}
 	// Down
-	if ((!action) && (((kDown & KEY_DDOWN) && player_1) || ((kDown & KEY_B) && !player_1))) {
+	if ((!action) && (((kDown & KEY_DDOWN) && player.getId() == 0) || ((kDown & KEY_B) && player.getId() == 1))) {
 		switch (special) {
 		case 0:
 			movement = processMovement(player, DIR_DOWN);
@@ -377,7 +398,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, unsigned &ind
 		}
 	}
 	// Left
-	if ((!action) && (((kDown & KEY_DLEFT) && player_1) || ((kDown & KEY_Y) && !player_1))) {
+	if ((!action) && (((kDown & KEY_DLEFT) && player.getId() == 0) || ((kDown & KEY_Y) && player.getId() == 1))) {
 		switch (special) {
 		case 0:
 			movement = processMovement(player, DIR_LEFT);
@@ -401,7 +422,7 @@ bool Map::processGame(Player &player, bool player_1, int &special, unsigned &ind
 		}
 	}
 	// Right
-	if ((!action) && (((kDown & KEY_DRIGHT) && player_1) || ((kDown & KEY_A) && !player_1))) {
+	if ((!action) && (((kDown & KEY_DRIGHT) && player.getId() == 0) || ((kDown & KEY_A) && player.getId() == 1))) {
 		switch (special) {
 		case 0:
 			movement = processMovement(player, DIR_RIGHT);
@@ -440,22 +461,32 @@ bool Map::processGame(Player &player, bool player_1, int &special, unsigned &ind
 		printf("\x1b[7;60H|Normal movement| ");
 		break;
 	case 1:
-		printf("\x1b[7;60H\x1b[32m|Inventory opened|\x1b[0m");
+		printf("\x1b[7;60H" ANSI_COLOR_BOLDGREEN "|Inventory opened|" ANSI_COLOR_RESET "\x1b[0m");
 		break;
 	case 2:
-		printf("\x1b[7;60H\x1b[31m|Action selected| \x1b[0m");
+		printf("\x1b[7;60H" ANSI_COLOR_BOLDCYAN "|Action selected| " ANSI_COLOR_RESET "\x1b[0m");
 		break;
 	default:
 		break;
 	}
 	return (action || movement);
 }
-void Map::playerHit(bool player_1, Bullet bullet) {
-	Player temp_player = players[1];
-	if (player_1) temp_player = players[0];
+void Map::playerHit(unsigned player, Bullet bullet) {
+	Player temp_player = players[0];
+	
+	switch (player)
+	{
+	case 0:
+		temp_player = players[0];
+		break;
+	default:
+		temp_player = players[1];
+		break;
+	}
+
 	temp_player.setHealt(temp_player.getHealt() - bullet.getDamage());
 	temp_player.setStatsChanged(true);
-	modifyPlayer(player_1, temp_player);
+	modifyPlayer(player, temp_player);
 }
 bool Map::processBullet(unsigned i, Bullet bullet) {
 	if (bullet.getPlayer() != 0 && players[0].getY() == bullet.getY() && players[0].getX() == bullet.getX()) {
