@@ -4,13 +4,19 @@ Shasciw
 ===============
 ## Game info:
 
-* ASCII text game for 2 players, where the objective will be to kill the other player.
+* ASCII text game for 2 players (4 or more in the future) 
+* The objective is to eliminate the others player (or enemy team in the future).
 * Turn based game, with special objects to help you.
-* (WIP) Objects will be added (hopefully) soon.
-* When the objects are added, i want to make it up to 4 players.
-* And then, to make better controls.
+* Objects which upgrades players stats.
 
-## Controls (they will probably change soon)
+## TODO:
+
+* Improve the controls.
+* Then make it up 4 players atm.
+* Add a team selector and more players.
+* Add save/load game.
+
+## Controls (BETA)
 
 Both joycons are held in vertical (for the moment).
 
