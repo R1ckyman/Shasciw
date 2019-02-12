@@ -1,6 +1,6 @@
 Shasciw
 ===============
-![](https://github.com/R1ckyman/homebrew-shoot/blob/master/res/Shootbrew_WIP.png)
+![Game](https://github.com/R1ckyman/Shasciw/blob/master/res/Shasciw_WIP.png)
 ===============
 ## Game info:
 
