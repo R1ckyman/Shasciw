@@ -112,6 +112,8 @@ int main(int argc, char **argv)
 	Keyboard keyboard(keyboard_1);
 	Player temp_player = map.getPlayer(0);
 
+	unsigned players = map.getPlayers();
+
 	consoleInit(NULL);
 
 	initJoycons();
@@ -124,8 +126,8 @@ int main(int argc, char **argv)
 
 		u64 kDown = Input::getInputDown(0);
 		u64 kDown_P2 = Input::getInputDown(1);
-		u64 kDown_P3 = Input::getInputDown(3);
-		u64 kDown_P4 = Input::getInputDown(4);
+		u64 kDown_P3 = Input::getInputDown(0);
+		u64 kDown_P4 = Input::getInputDown(1);
 
 		u64 key;
 		switch (player_index){
@@ -145,15 +147,15 @@ int main(int argc, char **argv)
 
 		switch (state) {
 		case 0: // Main menu
-			if ((kDown | kDown_P2) & DOWN) {
+			if ((kDown | kDown_P2 | kDown_P3 | kDown_P4) & DOWN) {
 				if (menu_index < 4) menu_index++;
 				printMenu(menu_index);
 			}
-			if ((kDown | kDown_P2) & UP) {
+			if ((kDown | kDown_P2 | kDown_P3 | kDown_P4) & UP) {
 				if (menu_index > 0) menu_index--;
 				printMenu(menu_index);
 			}
-			if ((kDown | kDown_P2) & ACTION_1) {
+			if ((kDown | kDown_P2 | kDown_P3 | kDown_P4) & ACTION_1) {
 				switch (menu_index)
 				{
 				case 0: // Quickplay
@@ -180,7 +182,7 @@ int main(int argc, char **argv)
 			}
 			break;
 		case 1: // Controls menu
-			if ((kDown | kDown_P2) & ACTION_1) {
+			if ((kDown | kDown_P2 | kDown_P3 | kDown_P4) & ACTION_1) {
 				consoleClear();
 				printMenu(0);
 				state = 0;
@@ -200,7 +202,7 @@ int main(int argc, char **argv)
 					map.modifyPlayer(player_index, temp_player);
 					keyboard.setCaps(true);
 					keyboard.setIndex(0);
-					if (player_index == 0) player_index = 1;
+					if (player_index < players) player_index++;
 					else {
 						player_index = 0;
 						state = 3; // Letter selector
@@ -243,25 +245,23 @@ int main(int argc, char **argv)
 				map.modifyPlayer(player_index, temp_player);
 				keyboard.setCaps(true);
 				keyboard.setIndex(0);
-				switch (player_index) {
-				case 0:
-					player_index = 1;
+				if (player_index < players) {
+					player_index++;
 					consoleClear();
-					break;
-				default:
+				}
+				else {
 					player_index = 0;
 					consoleClear();
 					map.printMapFull(map.getPlayer(player_index));
 					// Game process
 					state = 4;
-					break;
 				}
 			}
 			else keyboard.printKeyboard();
 			break;
 		case 4: // Game process
-			// If bot players are alive
-			if (map.getPlayer(player_index).getHealt() > 0 && map.getPlayer(player_index).getHealt() > 0) {
+			// If all players are alive
+			if (map.getPlayer(player_index).getHealt() > 0) {
 				// Player turn
 				temp_player = map.getPlayer(player_index);
 
@@ -280,14 +280,11 @@ int main(int argc, char **argv)
 						temp_player.setLastMove(DIR_NULL);
 						temp_player.setInventoryChanged(true);
 						map.modifyPlayer(player_index, temp_player);
-						switch (player_index)
-						{
-						case 0:
-							player_index = 1;
-							break;
-						default:
+						if (player_index < players) {
+							player_index++;
+						}
+						else {
 							player_index = 0;
-							break;
 						}
 						map.getPlayer(player_index).printStats();
 						map.getPlayer(player_index).printInfo();
@@ -309,7 +306,7 @@ int main(int argc, char **argv)
 			break;
 		}
 
-		if ((kDown | kDown_P2) & EXIT) {
+		if ((kDown | kDown_P2 | kDown_P3 | kDown_P4) & EXIT) {
 			player_index = 0;
 			switch (state){
 			case 0: // Main menu

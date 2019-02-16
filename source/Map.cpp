@@ -6,10 +6,15 @@
 Map::Map() {
 	unsigned i;
 	unsigned y;
+	playerCount = 4;
 	char name_1[8] = { 'P','l','a','y','e','r','1','\0' };
 	char name_2[8] = { 'P','l','a','y','e','r','2','\0' };
+	char name_3[8] = { 'P','l','a','y','e','r','3','\0' };
+	char name_4[8] = { 'P','l','a','y','e','r','4','\0' };
 	Player player_1(name_1, 1, 1, 0);
 	Player player_2(name_2, 30, 1, 1);
+	Player player_3(name_3, 1, 30, 2);
+	Player player_4(name_4, 30, 30, 3);
 	char map[MAPSIZE][MAPSIZE] = {
 	{'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
 	{'#',' ',' ',' ',' ',' ','#','o','#','o',' ',' ',' ','o','#','o','o','#','o',' ',' ',' ','o','#','o','#',' ',' ',' ',' ',' ','#'},
@@ -64,6 +69,8 @@ Map::Map() {
 
 	players.push_back(player_1);
 	players.push_back(player_2);
+	players.push_back(player_3);
+	players.push_back(player_4);
 }
 void Map::modifyPlayer(unsigned player_index, Player player) {
 	switch (player_index)
@@ -71,8 +78,14 @@ void Map::modifyPlayer(unsigned player_index, Player player) {
 	case 0:
 		players[0] = player;
 		break;
-	default:
+	case 1:
 		players[1] = player;
+		break;
+	case 2:
+		players[2] = player;
+		break;
+	default:
+		players[3] = player;
 		break;
 	}
 }
@@ -80,13 +93,18 @@ void Map::modifyBullet(unsigned position, Bullet bullet) {
 	bullets[position] = bullet;
 }
 Player Map::getPlayer(unsigned player) const {
-	switch (player)
-	{
+	switch (player){
 	case 0:
 		return players[0];
 		break;
-	default:
+	case 1:
 		return players[1];
+		break;
+	case 2:
+		return players[2];
+		break;
+	default:
+		return players[3];
 		break;
 	}
 }
@@ -122,8 +140,14 @@ void Map::printMapOptimized(Player player) {
 	case 0:
 		printf(ANSI_COLOR_BOLDYELLOW);
 		break;
-	default:
+	case 1:
 		printf(ANSI_COLOR_BOLDGREEN);
+		break;
+	case 2:
+		printf(ANSI_COLOR_BOLDMAGENTA);
+		break;
+	default:
+		printf(ANSI_COLOR_BOLDCYAN);
 		break;
 	}
 	switch (player.getLastMove()) {
@@ -185,6 +209,8 @@ void Map::printMapFull(Player player) {
 		for (y = 0;y < MAPSIZE;y++) {
 			if (i == players[0].getY() && y == players[0].getX()) printf(ANSI_COLOR_BOLDYELLOW "%c" ANSI_COLOR_RESET, players[0].getLetter());
 			else if (i == players[1].getY() && y == players[1].getX()) printf(ANSI_COLOR_BOLDGREEN "%c" ANSI_COLOR_RESET, players[1].getLetter());
+			else if (i == players[2].getY() && y == players[2].getX()) printf(ANSI_COLOR_BOLDMAGENTA "%c" ANSI_COLOR_RESET, players[1].getLetter());
+			else if (i == players[3].getY() && y == players[3].getX()) printf(ANSI_COLOR_BOLDCYAN "%c" ANSI_COLOR_RESET, players[1].getLetter());
 			else if (terrain[i][y] == 'O' || terrain[i][y] == 'o') printf(ANSI_COLOR_CYAN "%c" ANSI_COLOR_RESET, terrain[i][y]);
 			else if (terrain[i][y] == 'D') printf(ANSI_COLOR_MAGENTA "%c" ANSI_COLOR_RESET, terrain[i][y]);
 			else printf("%c", terrain[i][y]);
@@ -480,7 +506,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 	}
 	return (action || movement);
 }
-void Map::playerHit(unsigned player, Bullet bullet) {
+void Map::playerHit(unsigned player, const Bullet &bullet) {
 	Player temp_player = players[0];
 	
 	switch (player)
@@ -488,8 +514,14 @@ void Map::playerHit(unsigned player, Bullet bullet) {
 	case 0:
 		temp_player = players[0];
 		break;
-	default:
+	case 1:
 		temp_player = players[1];
+		break;
+	case 2:
+		temp_player = players[2];
+		break;
+	default:
+		temp_player = players[3];
 		break;
 	}
 
@@ -497,30 +529,57 @@ void Map::playerHit(unsigned player, Bullet bullet) {
 	temp_player.setStatsChanged(true);
 	modifyPlayer(player, temp_player);
 }
+bool Map::bulletHit(const Bullet &bullet, Dir dir) {
+	for(unsigned i = 0; i < playerCount; i++)
+		switch (dir)
+		{
+		case DIR_UP:
+			if (bullet.getY() - 1 == players[i].getY() && bullet.getX() == players[i].getX()) {
+				playerHit(i, bullet);
+				return true;
+			}
+			break;
+		case DIR_DOWN:
+			if (bullet.getY() + 1 == players[i].getY() && bullet.getX() == players[i].getX()) {
+				playerHit(i, bullet);
+				return true;
+			}
+			break;
+		case DIR_RIGHT:
+			if (bullet.getY() == players[i].getY() && bullet.getX() + 1 == players[i].getX()) {
+				playerHit(i, bullet);
+				return true;
+			}
+			break;
+		case DIR_LEFT:
+			if (bullet.getY() == players[i].getY() && bullet.getX() -1 == players[i].getX()) {
+				playerHit(i, bullet);
+				return true;
+			}
+			break;
+		case DIR_NULL:
+			if (bullet.getPlayer() != i && bullet.getY() == players[i].getY() && bullet.getX() == players[i].getX()) {
+				playerHit(i, bullet);
+				return true;
+			}
+			break;
+		default:
+			return true;
+			break;
+		}
+	return false;
+}
+
 bool Map::processBullet(unsigned i, Bullet bullet) {
-	if (bullet.getPlayer() != 0 && players[0].getY() == bullet.getY() && players[0].getX() == bullet.getX()) {
-		playerHit(true, bullet);
-		return true;
-	}
-	else if (bullet.getPlayer() != 1 && players[1].getY() == bullet.getY() && players[1].getX() == bullet.getX()) {
-		playerHit(false, bullet);
-		return true;
-	}
-	if (terrain[bullet.getY()][bullet.getX()] == ' ') printf("\x1b[%d;%dH ", bullet.getY() + 7, bullet.getX() + 26);
+	if (bulletHit(bullet, DIR_NULL)) return true;
+	if (terrain[bullet.getY()][bullet.getX()] == ' ') printf("\x1b[%d;%dH ", bullet.getY() + MAP_Y, bullet.getX() + MAP_X);
 	switch (bullet.getDir()) {
 	case DIR_UP:
 		if (terrain[bullet.getY() - 1][bullet.getX()] == ' ') {
 			bullet.setY(bullet.getY() - 1);
 			modifyBullet(i, bullet);
 		}
-		else if (bullet.getY() - 1 == players[0].getY() && bullet.getX() == players[0].getX()) {
-			playerHit(true, bullet);
-			return true;
-		}
-		else if (bullet.getY() - 1 == players[1].getY() && bullet.getX() == players[1].getX()) {
-			playerHit(false, bullet);
-			return true;
-		}
+		else if (bulletHit(bullet, DIR_UP)) return true;
 		else return true;
 		break;
 	case DIR_DOWN:
@@ -528,14 +587,7 @@ bool Map::processBullet(unsigned i, Bullet bullet) {
 			bullet.setY(bullet.getY() + 1);
 			modifyBullet(i, bullet);
 		}
-		else if (bullet.getY() + 1 == players[0].getY() && bullet.getX() == players[0].getX()) {
-			playerHit(true, bullet);
-			return true;
-		}
-		else if (bullet.getY() + 1 == players[1].getY() && bullet.getX() == players[1].getX()) {
-			playerHit(false, bullet);
-			return true;
-		}
+		else if (bulletHit(bullet, DIR_DOWN)) return true;
 		else return true;
 		break;
 	case DIR_RIGHT:
@@ -543,14 +595,7 @@ bool Map::processBullet(unsigned i, Bullet bullet) {
 			bullet.setX(bullet.getX() + 1);
 			modifyBullet(i, bullet);
 		}
-		else if (bullet.getY() == players[0].getY() && bullet.getX() + 1 == players[0].getX()) {
-			playerHit(true, bullet);
-			return true;
-		}
-		else if (bullet.getY() == players[1].getY() && bullet.getX() + 1 == players[1].getX()) {
-			playerHit(false, bullet);;
-			return true;
-		}
+		else if (bulletHit(bullet, DIR_RIGHT)) return true;
 		else return true;
 		break;
 	case DIR_LEFT:
@@ -558,14 +603,7 @@ bool Map::processBullet(unsigned i, Bullet bullet) {
 			bullet.setX(bullet.getX() - 1);
 			modifyBullet(i, bullet);
 		}
-		else if (bullet.getY() == players[0].getY() && bullet.getX() - 1 == players[0].getX()) {
-			playerHit(true, bullet);
-			return true;
-		}
-		else if (bullet.getY() == players[1].getY() && bullet.getX() - 1 == players[1].getX()) {
-			playerHit(false, bullet);
-			return true;
-		}
+		else if (bulletHit(bullet, DIR_LEFT)) return true;
 		else return true;
 		break;
 	default:
