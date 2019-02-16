@@ -22,17 +22,15 @@ void Keyboard::setCaps(bool caps) {
 void Keyboard::setIndex(int index) {
 	this->index = index;
 }
-bool Keyboard::processKeyboard(unsigned player_index) {
-	u64 kDown = Input::getInputDown();
-
+bool Keyboard::processKeyboard(u64 kDown) {
 	if (!kDown) return false; // If no key is pressed return
-	if (((kDown & KEY_ZL) && player_index == 0) || ((kDown & KEY_ZR) && player_index == 1)) {
+	if (kDown & ACTION_2) {
 		caps = !caps; // ZL for player 1, ZR for player 2, changes keyboard
 	}
-	if (((kDown & KEY_L) && player_index == 0) || ((kDown & KEY_R) && player_index == 1)) {
+	if (kDown & ACTION_1) {
 		return true; // If a letter is choosen return
 	}
-	if (((kDown & KEY_DUP) && player_index == 0) || ((kDown & KEY_X) && player_index == 1)) {
+	if (kDown & UP) {
 		if (index >= 10) {
 			index -= 10;
 		}
@@ -40,7 +38,7 @@ bool Keyboard::processKeyboard(unsigned player_index) {
 			index += 30;
 		}
 	}
-	if (((kDown & KEY_DDOWN) && player_index == 0) || ((kDown & KEY_B) && player_index == 1)) {
+	if (kDown & DOWN) {
 		if (index <= 29) {
 			index += 10;
 		}
@@ -48,7 +46,7 @@ bool Keyboard::processKeyboard(unsigned player_index) {
 			index -= 30;
 		}
 	}
-	if (((kDown & KEY_DLEFT) && player_index == 0) || ((kDown & KEY_Y) && player_index == 1)) {
+	if (kDown & LEFT) {
 		if (index == 0 || index == 10 || index == 20 || index == 30) {
 			index += 9;
 		}
@@ -56,7 +54,7 @@ bool Keyboard::processKeyboard(unsigned player_index) {
 			index--;
 		}
 	}
-	if (((kDown & KEY_DRIGHT) && player_index == 0) || ((kDown & KEY_A) && player_index == 1)) {
+	if (kDown & RIGHT) {
 		if (index == 9 || index == 19 || index == 29 || index == 39) {
 			index -= 9;
 		}

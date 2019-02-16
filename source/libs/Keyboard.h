@@ -22,7 +22,7 @@ public:
 	void setIndex(int index);
 	void printKeyboard();
 	void printCurName(char name[8], int name_letters);
-	bool processKeyboard(unsigned player_index);
+	bool processKeyboard(u64 kDown);
 };
 
 #endif
