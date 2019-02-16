@@ -31,32 +31,54 @@ bool Keyboard::processKeyboard(u64 kDown) {
 		return true; // If a letter is choosen return
 	}
 	if (kDown & UP) {
-		if (index >= 10) {
+		if (index >= 10 && index <= 39) {
 			index -= 10;
 		}
+		else if (index == 40) {
+			index = 31;
+		}
+		else if (index == 41) {
+			index = 36;
+		}
+		else if (index <= 4) {
+			index = 40;
+		}
 		else {
-			index += 30;
+			index = 41;
 		}
 	}
 	if (kDown & DOWN) {
 		if (index <= 29) {
 			index += 10;
 		}
-		else {
-			index -= 30;
+		else if (index <= 34) {
+			index = 40;
 		}
+		else if (index == 40) {
+			index = 1;
+		}
+		else if (index == 41) {
+			index = 6;
+		}
+		else index = 41;
 	}
 	if (kDown & LEFT) {
 		if (index == 0 || index == 10 || index == 20 || index == 30) {
 			index += 9;
+		}
+		else if (index == 40) {
+			index = 41;
 		}
 		else {
 			index--;
 		}
 	}
 	if (kDown & RIGHT) {
-		if (index == 9 || index == 19 || index == 29 || index == 39) {
+		if (index == 9 || index == 19 || index == 29) {
 			index -= 9;
+		}
+		else if (index == 41) {
+			index = 40;
 		}
 		else {
 			index++;
@@ -69,15 +91,21 @@ void Keyboard::printKeyboard() {
 	unsigned y = 0;
 
 	for (i = 0;i < KEYBOARDSIZE;i++) {
-		if (i == 0 || i == 10 || i == 20 || i == 30) {
+		if (i == 0 || i == 10 || i == 20 || i == 30 || i == 40) {
 			printf("\x1b[%d;30H", y + 10);
 			y += 2;
 		}
 		if (i == index) {
-			printf(ANSI_COLOR_BOLDRED "%c " ANSI_COLOR_RESET, keyboard[i]);
+			if (keyboard[i] == '\\') printf(ANSI_COLOR_BOLDGREEN "Confirm" ANSI_COLOR_RESET);
+			else if (keyboard[i] == '\n') printf(ANSI_COLOR_BOLDRED "Delete    " ANSI_COLOR_RESET);
+			else if (keyboard[i] == ' ') printf(ANSI_COLOR_BOLDCYAN "\' \'" ANSI_COLOR_RESET);
+			else printf(ANSI_COLOR_BOLDCYAN "%c " ANSI_COLOR_RESET, keyboard[i]);
 		}
 		else {
-			printf("%c ", keyboard[i]);
+			if (keyboard[i] == '\\') printf(ANSI_COLOR_GREEN "Confirm" ANSI_COLOR_RESET);
+			else if (keyboard[i] == '\n') printf(ANSI_COLOR_RED "Delete    " ANSI_COLOR_RESET);
+			else if (keyboard[i] == ' ') printf(ANSI_COLOR_CYAN "\' \'" ANSI_COLOR_RESET);
+			else printf(ANSI_COLOR_CYAN "%c " ANSI_COLOR_RESET, keyboard[i]);
 		}
 	}
 }

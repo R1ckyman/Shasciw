@@ -5,7 +5,7 @@
 #include "Player.h"
 #include "Input.h"
 
-const unsigned KEYBOARDSIZE = 40;
+const unsigned KEYBOARDSIZE = 42;
 
 class Keyboard {
 private:
@@ -16,7 +16,7 @@ public:
 	Keyboard(char keyboard[KEYBOARDSIZE]);
 	bool getCaps() const { return caps; };
 	int getIndex() const { return index; };
-	char getCharacter(int index) const { return keyboard[index]; };
+	char getCharacter(unsigned index) const { return keyboard[index]; };
 	void setKeyboard(char keyboard[KEYBOARDSIZE]);
 	void setCaps(bool caps);
 	void setIndex(int index);
