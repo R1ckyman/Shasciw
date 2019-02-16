@@ -3,30 +3,28 @@
 
 void printControls() {
 	consoleClear();
-	printf(ANSI_COLOR_BOLDYELLOW "\x1b[2;24HReturn to main menu (+)" ANSI_COLOR_RESET);
-	printf("\x1b[6;1H\x1b[33m[Input] - Player 1\x1b[0m");
-	printf("\x1b[8;1H[Keyboard] - Player 1");
-	printf("\x1b[10;3H-%c, %c, %c, %c, to control the keyboard", 24, 25, 26, 27);
-	printf("\x1b[12;3H-Move up(Left stick) to enter the name, ZL to switch caps");
-	printf("\x1b[14;3H-Move left(Left stick) to delete, move right(Right stick) to space");
-	printf("\x1b[16;1H[Game] - Player 1");
-	printf("\x1b[18;3H-%c, %c, %c, %c, to control the character", 24, 25, 26, 27);
-	printf("\x1b[20;3H-L to select action: shoot/open and %c, %c, %c, %c, to select the direction", 24, 25, 26, 27);
-	printf("\x1b[22;3H-ZR to open inventory and L to use an object");
-	printf("\x1b[24;1H\x1b[33m[Input] - Player 2\x1b[0m");
-	printf("\x1b[26;1H[Keyboard] - Player 2");
+	printf(ANSI_COLOR_BOLDYELLOW "\x1b[3;25HReturn to main menu (+)" ANSI_COLOR_RESET);
+	printf(ANSI_COLOR_BOLDCYAN "\x1b[7;1H[Input] - Left Joycon (Horizontal)" ANSI_COLOR_RESET);
+	printf("\x1b[9;1H[Keyboard]");
+	printf("\x1b[11;3H-%c, %c, %c, %c, to control the keyboard", 24, 25, 26, 27);
+	printf("\x1b[13;3H-SL for enter input and SR for switch caps");
+	printf("\x1b[15;1H[Game]");
+	printf("\x1b[17;3H-%c, %c, %c, %c, to control the character", 24, 25, 26, 27);
+	printf("\x1b[19;3H-SL to select action (shoot/open) and %c, %c, %c, %c, to select the direction", 24, 25, 26, 27);
+	printf("\x1b[21;3H-SL to use an object and SR to open inventory");
+	printf(ANSI_COLOR_BOLDCYAN "\x1b[24;1H[Input] - Right Joycon (Horizontal)" ANSI_COLOR_RESET);
+	printf("\x1b[26;1H[Keyboard]");
 	printf("\x1b[28;3H-X,B,A,Y to control the keyboard");
-	printf("\x1b[30;3H-Move up(Right stick) to enter the name, ZR to switch caps");
-	printf("\x1b[32;3HMove left(Right stick) to delete, move right(Right stick) to space");
-	printf("\x1b[34;1H[Game] - Player 2");
-	printf("\x1b[36;3H-X,B,A,Y to control the character");
-	printf("\x1b[38;3H-R to select action: shoot/open and X,B,A,Y to select the direction");
-	printf("\x1b[40;3H-ZR to open inventory and R to use an object");
+	printf("\x1b[30;3H-SL for enter input and SR for switch caps");
+	printf("\x1b[32;1H[Game]");
+	printf("\x1b[34;3H-X,B,A,Y to control the character");
+	printf("\x1b[36;3H-SR to select action (shoot/open) and X,B,A,Y to select the direction");
+	printf("\x1b[38;3H-SR to use an object and SR to open inventory");
 }
 void printMenu(unsigned index) {
 	if (index == 0) printf(ANSI_COLOR_BOLDRED);
 	else printf(ANSI_COLOR_RED);
-	printf("\x1b[4;27HQuickplay (-)" ANSI_COLOR_RESET);
+	printf("\x1b[4;27HQuickplay" ANSI_COLOR_RESET);
 	if (index == 1) printf(ANSI_COLOR_BOLDYELLOW);
 	else printf(ANSI_COLOR_YELLOW);
 	printf("\x1b[8;27HName selector" ANSI_COLOR_RESET);
@@ -180,11 +178,6 @@ int main(int argc, char **argv)
 				}
 				menu_index = 0;
 			}
-			if ((kDown | kDown_P2) & SPECIAL_1) {
-				consoleClear();
-				map.printMapFull(map.getPlayer(player_index));
-				state = 4;
-			}
 			break;
 		case 1: // Controls menu
 			if ((kDown | kDown_P2) & ACTION_1) {
@@ -323,12 +316,13 @@ int main(int argc, char **argv)
 				// Returns to HB menu
 				active = false;
 				break;
-			case 1:
+			case 1: // Controls menu
 				consoleClear();
+				printMenu(0);
 				state = 0;
 				break;
-			case 2:
-			case 3:
+			case 2: // Name selector
+			case 3: // Letter selector
 				state = 0;
 				restart(map);
 				break;
