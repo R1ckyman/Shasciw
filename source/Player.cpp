@@ -81,7 +81,7 @@ void Player::printStats() const {
 	// Damage
 	printf("\x1b[14;2H" ANSI_COLOR_RED "Damage: %u" ANSI_COLOR_RESET, damage);
 	// Inventory text
-	printf("\x1b[16;2H|  Inventory: %lu items\x1b[16;25H|", inventory.size());
+	printf("\x1b[16;2H| Inventory: %lu items\x1b[16;25H|", inventory.size());
 }
 void Player::removeObject(unsigned object) {
 	for (unsigned i = 0;i < inventory.size();i++)

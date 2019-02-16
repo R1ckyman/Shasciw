@@ -110,15 +110,11 @@ void Keyboard::printKeyboard() {
 	}
 }
 void Keyboard::printCurName(char name[8], int name_letters) {
-	int i;
-
 	printf("\x1b[6;26H|--Select player name--|");
-
-	// there is a display issue here
 	printf("\x1b[8;29H|");
-	for (i = 0;i < 8;i++) {
-		if (i > name_letters) printf(" %c", '_');
+	for (int i = 0;i < 7;i++) {
+		if (i+1 > name_letters) printf(" %c", '_');
 		else printf(" %c", name[i]);
 	}
-	printf("\x1b[8;48H|");
+	printf("\x1b[8;45H|");
 }
