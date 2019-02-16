@@ -46,7 +46,7 @@ Map::Map() {
 	};
 	// Random class
 	std::mt19937 mt(time(NULL));
-	std::uniform_int_distribution<unsigned> distribution(0, 4);
+	std::uniform_int_distribution<unsigned> distribution(0, 6);
 	for (i = 0;i < MAPSIZE;i++) {
 		for (y = 0;y < MAPSIZE;y++) {
 			terrain[i][y] = map[i][y];
@@ -311,6 +311,12 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 				break;
 			case 4:
 				player.setDamage(player.getDamage() + 1);
+				break;
+			case 5:
+				player.setHealt(player.getHealt() + 1);
+				break;
+			case 6:
+				player.setHealt(player.getHealt() + 2);
 				break;
 			default:
 				break;

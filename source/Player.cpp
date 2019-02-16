@@ -103,19 +103,25 @@ void Player::printInventory(unsigned index) const {
 			if (i == index) printf(ANSI_COLOR_BOLDRED);
 			switch (inventory[i]) {
 			case 0:
-				printf("-Add 1 move      ");
+				printf("-Add 2 move      ");
 				break;
 			case 1:
-				printf("-Add 2 moves     ");
+				printf("-Add 3 moves     ");
 				break;
 			case 2:
-				printf("-Add 3 moves     ");
+				printf("-Add 4 moves     ");
 				break;
 			case 3:
 				printf("-[P] Add 1 move  ");
 				break;
 			case 4:
-				printf("-Add 1 damage    ");
+				printf("-[P] Add 1 damage");
+				break;
+			case 5:
+				printf("-[P] Add 1 health");
+				break;
+			case 6:
+				printf("-[P] Add 2 healt");
 				break;
 			default:
 				printf("-Undefined object");
