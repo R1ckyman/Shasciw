@@ -61,8 +61,9 @@ void Player::printInfo() const {
 	printf("\x1b[10;60H" ANSI_COLOR_GREEN "->Moves: %u" ANSI_COLOR_RESET, moves + 1);
 }
 void Player::printStats() const {
+	printf("\x1b[7;2H| ----- Player %u ----- |", id+1);
 	// Player name
-	printf("\x1b[7;2H| -----");
+	printf("\x1b[9;2HName: ");
 	switch (id) {
 	case 0:
 		printf(ANSI_COLOR_BOLDYELLOW);
@@ -74,13 +75,13 @@ void Player::printStats() const {
 		printf(ANSI_COLOR_BOLDYELLOW);
 		break;
 	}
-	printf(" %s " ANSI_COLOR_RESET "\x1b[7;18H----- |", name);
-	// Inventory text
-	printf("\x1b[9;2H| Inventory: %lu objects\x1b[9;24H|", inventory.size());
+	printf("%s" ANSI_COLOR_RESET, name);
 	// Healt
-	printf("\x1b[13;60H" ANSI_COLOR_BOLDRED "->Healt: %d", healt);
+	printf("\x1b[12;2H" ANSI_COLOR_BOLDRED "Healt: %d", healt);
 	// Damage
-	printf("\x1b[15;60H" ANSI_COLOR_RED "->Damage: %u" ANSI_COLOR_RESET, damage);
+	printf("\x1b[14;2H" ANSI_COLOR_RED "Damage: %u" ANSI_COLOR_RESET, damage);
+	// Inventory text
+	printf("\x1b[16;2H|  Inventory: %lu items\x1b[16;25H|", inventory.size());
 }
 void Player::removeObject(unsigned object) {
 	for (unsigned i = 0;i < inventory.size();i++)
@@ -97,7 +98,7 @@ unsigned Player::getObject(unsigned index) {
 void Player::printInventory(unsigned index) const {
 	unsigned i;
 	for (i = 0;i < INVENTORY;i++) {
-		printf("\x1b[%d;3H", 11 + i * 2);
+		printf("\x1b[%d;3H", 18 + i * 2);
 		if (i < getInventorySize()) {
 			if (i == index) printf(ANSI_COLOR_BOLDRED);
 			switch (inventory[i]) {

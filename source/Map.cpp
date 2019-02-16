@@ -1,5 +1,8 @@
 #include "Map.h"
 
+#define MAP_X 27
+#define MAP_Y 7
+
 Map::Map() {
 	unsigned i;
 	unsigned y;
@@ -125,23 +128,23 @@ void Map::printMapOptimized(Player player) {
 	}
 	switch (player.getLastMove()) {
 	case DIR_UP:
-		printf("\x1b[%d;%dH%c", player.getY() + 7, player.getX() + 26, player.getLetter());
-		printf("\x1b[%d;%dH ", player.getY() + 7 + 1, player.getX() + 26);
+		printf("\x1b[%d;%dH%c", player.getY() + MAP_Y, player.getX() + MAP_X, player.getLetter());
+		printf("\x1b[%d;%dH ", player.getY() + MAP_Y + 1, player.getX() + MAP_X);
 		break;
 	case DIR_DOWN:
-		printf("\x1b[%d;%dH%c", player.getY() + 7, player.getX() + 26, player.getLetter());
-		printf("\x1b[%d;%dH ", player.getY() + 7 - 1, player.getX() + 26);
+		printf("\x1b[%d;%dH%c", player.getY() + MAP_Y, player.getX() + MAP_X, player.getLetter());
+		printf("\x1b[%d;%dH ", player.getY() + MAP_Y - 1, player.getX() + MAP_X);
 		break;
 	case DIR_LEFT:
-		printf("\x1b[%d;%dH%c", player.getY() + 7, player.getX() + 26, player.getLetter());
-		printf("\x1b[%d;%dH ", player.getY() + 7, player.getX() + 26 + 1);
+		printf("\x1b[%d;%dH%c", player.getY() + MAP_Y, player.getX() + MAP_X, player.getLetter());
+		printf("\x1b[%d;%dH ", player.getY() + MAP_Y, player.getX() + MAP_X + 1);
 		break;
 	case DIR_RIGHT:
-		printf("\x1b[%d;%dH%c", player.getY() + 7, player.getX() + 26, player.getLetter());
-		printf("\x1b[%d;%dH ", player.getY() + 7, player.getX() + 26 - 1);
+		printf("\x1b[%d;%dH%c", player.getY() + MAP_Y, player.getX() + MAP_X, player.getLetter());
+		printf("\x1b[%d;%dH ", player.getY() + MAP_Y, player.getX() + MAP_X - 1);
 		break;
 	default:
-		printf("\x1b[%d;%dH%c", player.getY() + 7, player.getX() + 26, player.getLetter());
+		printf("\x1b[%d;%dH%c", player.getY() + MAP_Y, player.getX() + MAP_X, player.getLetter());
 		break;
 	}
 	// Bullet control
@@ -152,7 +155,7 @@ void Map::printMapOptimized(Player player) {
 			i--;
 		}
 		else {
-			printf("\x1b[%d;%dH*", bullets[i].getY() + 7, bullets[i].getX() + 26);
+			printf("\x1b[%d;%dH*", bullets[i].getY() + MAP_Y, bullets[i].getX() + MAP_X);
 		}
 	}
 	printf(ANSI_COLOR_MAGENTA);
@@ -161,11 +164,11 @@ void Map::printMapOptimized(Player player) {
 		if (doors[i].getOpen()) {
 			doors[i].setTime();
 			if (doors[i].getTime() == 0 && terrain[doors[i].getX()][doors[i].getY()] == 'D') {
-				printf("\x1b[%d;%dHD", doors[i].getX() + 7, doors[i].getY() + 26);
+				printf("\x1b[%d;%dHD", doors[i].getX() + MAP_Y, doors[i].getY() + MAP_X);
 				doors[i].setOpen(false);
 			}
 			else if (terrain[doors[i].getX()][doors[i].getY()] == 'D') {
-				printf("\x1b[%d;%dH_", doors[i].getX() + 7, doors[i].getY() + 26);
+				printf("\x1b[%d;%dH_", doors[i].getX() + MAP_Y, doors[i].getY() + MAP_X);
 			}
 		}
 	}
@@ -178,7 +181,7 @@ void Map::printMapFull(Player player) {
 	terrain[player.getY()][player.getX()] = player.getLetter();
 
 	for (i = 0;i < MAPSIZE;i++) {
-		printf("\x1b[%d;26H", i + 7);
+		printf("\x1b[%d;%dH", i + MAP_Y, MAP_X);
 		for (y = 0;y < MAPSIZE;y++) {
 			if (i == players[0].getY() && y == players[0].getX()) printf(ANSI_COLOR_BOLDYELLOW "%c" ANSI_COLOR_RESET, players[0].getLetter());
 			else if (i == players[1].getY() && y == players[1].getX()) printf(ANSI_COLOR_BOLDGREEN "%c" ANSI_COLOR_RESET, players[1].getLetter());

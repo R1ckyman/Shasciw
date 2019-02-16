@@ -38,7 +38,7 @@ bool Keyboard::processKeyboard(u64 kDown) {
 			index = 31;
 		}
 		else if (index == 41) {
-			index = 36;
+			index = 38;
 		}
 		else if (index <= 4) {
 			index = 40;
@@ -58,7 +58,7 @@ bool Keyboard::processKeyboard(u64 kDown) {
 			index = 1;
 		}
 		else if (index == 41) {
-			index = 6;
+			index = 8;
 		}
 		else index = 41;
 	}
@@ -88,23 +88,23 @@ bool Keyboard::processKeyboard(u64 kDown) {
 }
 void Keyboard::printKeyboard() {
 	unsigned i;
-	unsigned y = 0;
+	unsigned y = 4;
 
 	for (i = 0;i < KEYBOARDSIZE;i++) {
 		if (i == 0 || i == 10 || i == 20 || i == 30 || i == 40) {
-			printf("\x1b[%d;30H", y + 10);
+			printf("\x1b[%d;29H", y + 10);
 			y += 2;
 		}
 		if (i == index) {
 			if (keyboard[i] == '\\') printf(ANSI_COLOR_BOLDGREEN "Confirm" ANSI_COLOR_RESET);
-			else if (keyboard[i] == '\n') printf(ANSI_COLOR_BOLDRED "Delete    " ANSI_COLOR_RESET);
-			else if (keyboard[i] == ' ') printf(ANSI_COLOR_BOLDCYAN "\' \'" ANSI_COLOR_RESET);
+			else if (keyboard[i] == '\n') printf(ANSI_COLOR_BOLDRED "Delete       " ANSI_COLOR_RESET);
+			else if (keyboard[i] == ' ') printf(ANSI_COLOR_BOLDYELLOW "_" ANSI_COLOR_RESET);
 			else printf(ANSI_COLOR_BOLDCYAN "%c " ANSI_COLOR_RESET, keyboard[i]);
 		}
 		else {
 			if (keyboard[i] == '\\') printf(ANSI_COLOR_GREEN "Confirm" ANSI_COLOR_RESET);
-			else if (keyboard[i] == '\n') printf(ANSI_COLOR_RED "Delete    " ANSI_COLOR_RESET);
-			else if (keyboard[i] == ' ') printf(ANSI_COLOR_CYAN "\' \'" ANSI_COLOR_RESET);
+			else if (keyboard[i] == '\n') printf(ANSI_COLOR_RED "Delete       " ANSI_COLOR_RESET);
+			else if (keyboard[i] == ' ') printf(ANSI_COLOR_YELLOW "_" ANSI_COLOR_RESET);
 			else printf(ANSI_COLOR_CYAN "%c " ANSI_COLOR_RESET, keyboard[i]);
 		}
 	}
@@ -112,13 +112,13 @@ void Keyboard::printKeyboard() {
 void Keyboard::printCurName(char name[8], int name_letters) {
 	int i;
 
-	printf("\x1b[4;27H|--Select player name--|");
+	printf("\x1b[6;26H|--Select player name--|");
 
 	// there is a display issue here
-	printf("\x1b[6;30H|");
+	printf("\x1b[8;29H|");
 	for (i = 0;i < 8;i++) {
 		if (i > name_letters) printf(" %c", '_');
 		else printf(" %c", name[i]);
 	}
-	printf("\x1b[6;48H|");
+	printf("\x1b[8;48H|");
 }

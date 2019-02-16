@@ -83,15 +83,15 @@ void initJoycons() {
 int main(int argc, char **argv)
 {
 	char keyboard_1[KEYBOARDSIZE] = { '0','1','2','3','4','5','6','7','8','9',
-									'A','B','C','D','F','G','H','I','J','K',
-									'L','M','N','O','P','Q','R','S','T','U',
-									'V','W','X','Y','Z','$','/','@','+',' ',
+									'A','B','C','D','E','F','G','H','I','J',
+									'K','L','M','N','O','P','Q','R','S','T',
+									'U','V','W','X','Y','Z','$','/','@',' ',
 									'\n','\\' };
 
-	char keyboard_2[KEYBOARDSIZE] = { '&','%','?','!','·','-','(',')','[',']',
-									'a','b','c','d','f','g','h','i','j','k',
-									'l','m','n','o','p','q','r','s','t','u',
-									'v','w','x','y','z','<','=','>','*',' ',
+	char keyboard_2[KEYBOARDSIZE] = { '&','%','?','!','=','+','(',')','[',']',
+									'a','b','c','d','e','f','g','h','i','j',
+									'k','l','m','n','o','p','q','r','s','t',
+									'u','v','w','x','y','z','<','>','*',' ',
 									'\n','\\' };
 
 	char temp_name[8] = { '\0','\0','\0','\0','\0','\0','\0','\0' };
@@ -210,8 +210,7 @@ int main(int argc, char **argv)
 					if (player_index == 0) player_index = 1;
 					else {
 						player_index = 0;
-						// Letter selector
-						state = 3;
+						state = 3; // Letter selector
 						consoleClear();
 					}
 					name_letters = 0;
@@ -220,7 +219,6 @@ int main(int argc, char **argv)
 					break;
 				case '\n': // Delete
 					if (name_letters > 0) {
-						printf("\x1b[8;27H%27c", ' ');
 						name_letters--;
 						temp_name[name_letters] = '\0';
 					}
@@ -230,7 +228,7 @@ int main(int argc, char **argv)
 						temp_name[name_letters] = letter;
 						name_letters++;
 					}
-					else printf("\x1b[8;27H--Max name length reached--");
+					else printf(ANSI_COLOR_BOLDRED "\x1b[10;25H--Max name length reached--" ANSI_COLOR_RESET);
 					break;
 				}
 			}
@@ -240,39 +238,33 @@ int main(int argc, char **argv)
 			if (keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
 			else keyboard.setKeyboard(keyboard_2);
 
-			switch (player_index) {
-			case 0:
-				printf("\x1b[4;24H--Choose your letter Player 1--");
-				if (keyboard.processKeyboard(key)) {
-					temp_player = map.getPlayer(player_index);
-					temp_player.setLetter(keyboard.getCharacter(keyboard.getIndex()));
-					map.modifyPlayer(player_index, temp_player);
-					keyboard.setCaps(true);
-					keyboard.setIndex(0);
+			printf("\x1b[6;23H--Choose your letter Player %u--", player_index+1);
+			if (keyboard.processKeyboard(key)) {
+				if (keyboard.getIndex() > 39) {
+					printf(ANSI_COLOR_BOLDRED "\x1b[10;27H\\|That isn't a letter|/" ANSI_COLOR_RESET);
+					break;
+				}
+				letter = keyboard.getCharacter(keyboard.getIndex());
+				temp_player = map.getPlayer(player_index);
+				temp_player.setLetter(letter);
+				map.modifyPlayer(player_index, temp_player);
+				keyboard.setCaps(true);
+				keyboard.setIndex(0);
+				switch (player_index) {
+				case 0:
 					player_index = 1;
+					consoleClear();
+					break;
+				default:
+					player_index = 0;
+					consoleClear();
+					map.printMapFull(map.getPlayer(player_index));
+					// Game process
+					state = 4;
+					break;
 				}
-				else keyboard.printKeyboard();
-				break;
-			default:
-				printf("\x1b[4;24H--Choose your letter Player 2--");
-				if (keyboard.processKeyboard(key)) {
-					if (keyboard.getCharacter(keyboard.getIndex()) != temp_player.getLetter()) {
-						temp_player = map.getPlayer(player_index);
-						temp_player.setLetter(keyboard.getCharacter(keyboard.getIndex()));
-						map.modifyPlayer(player_index, temp_player);
-						keyboard.setCaps(true);
-						keyboard.setIndex(0);
-						player_index = 0;
-						consoleClear();
-						map.printMapFull(map.getPlayer(player_index));
-						// Game process
-						state = 4;
-					}
-					else printf("\x1b[7;27H\\|Letter already chosen|/");
-				}
-				else keyboard.printKeyboard();
-				break;
 			}
+			else keyboard.printKeyboard();
 			break;
 		case 4: // Game process
 			// If bot players are alive
@@ -325,6 +317,7 @@ int main(int argc, char **argv)
 		}
 
 		if ((kDown | kDown_P2) & EXIT) {
+			player_index = 0;
 			switch (state){
 			case 0: // Main menu
 				// Returns to HB menu
