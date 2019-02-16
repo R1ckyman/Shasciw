@@ -23,7 +23,7 @@ void printControls() {
 	printf("\x1b[38;3H-R to select action: shoot/open and X,B,A,Y to select the direction");
 	printf("\x1b[40;3H-ZR to open inventory and R to use an object");
 }
-void printMenu(unsigned index = 0) {
+void printMenu(unsigned index) {
 	if (index == 0) printf(ANSI_COLOR_BOLDRED);
 	else printf(ANSI_COLOR_RED);
 	printf("\x1b[4;27HQuickplay (-)" ANSI_COLOR_RESET);
@@ -52,33 +52,54 @@ void printWinner(unsigned player, const Map &map) {
 		printf(ANSI_COLOR_BOLDGREEN);
 		break;
 	}
-	printf("\x1b[23;24H--- ");
+	printf("\x1b[25;30H--- ");
 	for (i = 0;i < 8;i++) {
 		printf("%c", map.getPlayer(player).getName(i));
 	}
 	printf(" won---" ANSI_COLOR_RESET);
 
-	printMenu();
+	printMenu(0);
 }
 void restart(Map &map) {
 	Map temp_map;
 	map = temp_map;
 	consoleClear();
+	printMenu(0);
+}
+void initJoycons() {
+	hidSetNpadJoyHoldType(HidJoyHoldType_Horizontal);
+	for (int id = 0; id < 8; id++) {
+		hidSetNpadJoyAssignmentModeSingleByDefault((HidControllerID)id);
+	}
+	hidScanInput();
+	for (int id = 0; id < 8; id++) {
+		HidControllerType type = hidGetControllerType((HidControllerID)id);
+		if (type == TYPE_JOYCON_LEFT)
+			hidSetControllerLayout((HidControllerID)id, LAYOUT_LEFT);
+		if (type == TYPE_JOYCON_RIGHT)
+			hidSetControllerLayout((HidControllerID)id, LAYOUT_RIGHT);
+	}
 }
 int main(int argc, char **argv)
 {
 	char keyboard_1[KEYBOARDSIZE] = { '0','1','2','3','4','5','6','7','8','9',
-								'A','B','C','D','F','G','H','I','J','K',
-								'L','M','N','O','P','Q','R','S','T','U',
-								'V','W','X','Y','Z','$','/','@','%','&' };
-	char keyboard_2[KEYBOARDSIZE] = { '0','1','2','3','4','5','6','7','8','9',
-								'a','b','c','d','f','g','h','i','j','k',
-								'l','m','n','o','p','q','r','s','t','u',
-								'v','w','x','y','z','<','=','>','?','!' };
+									'A','B','C','D','F','G','H','I','J','K',
+									'L','M','N','O','P','Q','R','S','T','U',
+									'V','W','X','Y','Z','$','/','@','+',' ',
+									'\n','\\' };
+
+	char keyboard_2[KEYBOARDSIZE] = { '&','%','?','!','·','-','(',')','[',']',
+									'a','b','c','d','f','g','h','i','j','k',
+									'l','m','n','o','p','q','r','s','t','u',
+									'v','w','x','y','z','<','=','>','*',' ',
+									'\n','\\' };
+
 	char temp_name[8] = { '\0','\0','\0','\0','\0','\0','\0','\0' };
 
 	bool active = true;
 	bool next_player = false;
+
+	char letter;
 
 	int i;
 	int name_letters = 0;
@@ -93,30 +114,48 @@ int main(int argc, char **argv)
 	Keyboard keyboard(keyboard_1);
 	Player temp_player = map.getPlayer(0);
 
-	gfxInitDefault();
 	consoleInit(NULL);
 
-	printMenu();
-
+	initJoycons();
+	printMenu(0);
 	// Main loop
 	while (active)
 	{
 		//Scan all the inputs. This should be done once for each frame
 		hidScanInput();
 
-		u64 kDown = Input::getInputDown();
+		u64 kDown = Input::getInputDown(0);
+		u64 kDown_P2 = Input::getInputDown(1);
+		u64 kDown_P3 = Input::getInputDown(3);
+		u64 kDown_P4 = Input::getInputDown(4);
+
+		u64 key;
+		switch (player_index){
+		case 0:
+			key = kDown;
+			break;
+		case 1:
+			key = kDown_P2;
+			break;
+		case 2:
+			key = kDown_P3;
+			break;
+		default:
+			key = kDown_P4;
+			break;
+		}
 
 		switch (state) {
 		case 0: // Main menu
-			if ((kDown & KEY_DDOWN) || (kDown & KEY_B)) {
+			if ((kDown | kDown_P2) & DOWN) {
 				if (menu_index < 4) menu_index++;
 				printMenu(menu_index);
 			}
-			if ((kDown & KEY_DUP) || (kDown & KEY_X)) {
+			if ((kDown | kDown_P2) & UP) {
 				if (menu_index > 0) menu_index--;
 				printMenu(menu_index);
 			}
-			if ((kDown & KEY_L) || (kDown & KEY_R)) {
+			if ((kDown | kDown_P2) & ACTION_1) {
 				switch (menu_index)
 				{
 				case 0: // Quickplay
@@ -128,11 +167,12 @@ int main(int argc, char **argv)
 					consoleClear();
 					state = 2;
 					break;
-				case 2: // Print Controls
+				case 2: // Load Game
+					printMenu(0);
+					break;
+				case 3: // Print Controls
 					state = 1;
 					printControls();
-					break;
-				case 3:
 					break;
 				default: // Return HB menu
 					active = false;
@@ -140,16 +180,16 @@ int main(int argc, char **argv)
 				}
 				menu_index = 0;
 			}
-			if (kDown & KEY_MINUS) {
+			if ((kDown | kDown_P2) & SPECIAL_1) {
 				consoleClear();
 				map.printMapFull(map.getPlayer(player_index));
 				state = 4;
 			}
 			break;
 		case 1: // Controls menu
-			if ((kDown & KEY_L) || (kDown & KEY_R)) {
+			if ((kDown | kDown_P2) & ACTION_1) {
 				consoleClear();
-				printMenu();
+				printMenu(0);
 				state = 0;
 			}
 			break;
@@ -157,79 +197,44 @@ int main(int argc, char **argv)
 			if (keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
 			else keyboard.setKeyboard(keyboard_2);
 
-			switch (player_index)
-			{
-			case 0:
-				keyboard.printCurName(temp_name, name_letters);
-				if (kDown & KEY_LSTICK_LEFT) {
-					if (name_letters > 0) {
-						printf("\x1b[8;27H%27c", ' ');
-						name_letters--;
-						temp_name[name_letters] = '\0';
-					}
-				}
-				if (kDown & KEY_LSTICK_RIGHT) {
-					if (name_letters < 7) {
-						temp_name[name_letters] = ' ';
-						name_letters++;
-					}
-				}
-				if (kDown & KEY_LSTICK_UP) {
+			keyboard.printCurName(temp_name, name_letters);
+			if (keyboard.processKeyboard(key)) {
+				letter = keyboard.getCharacter(keyboard.getIndex());
+				switch (letter) {
+				case '\\': // Confirm
 					temp_player = map.getPlayer(player_index);
 					temp_player.setName(temp_name);
 					map.modifyPlayer(player_index, temp_player);
 					keyboard.setCaps(true);
 					keyboard.setIndex(0);
-					player_index = 1;
+					if (player_index == 0) player_index = 1;
+					else {
+						player_index = 0;
+						// Letter selector
+						state = 3;
+						consoleClear();
+					}
 					name_letters = 0;
 					consoleClear();
 					for (i = 0;i < 8;i++) temp_name[i] = '\0';
-				}
-				if (keyboard.processKeyboard(player_index)) {
-					if (name_letters < 7) {
-						temp_name[name_letters] = keyboard.getCharacter(keyboard.getIndex());
-						name_letters++;
-					}
-					else printf("\x1b[8;27H--Max name length reached--");
-				}
-				else keyboard.printKeyboard();
-				break;
-			default:
-				keyboard.printCurName(temp_name, name_letters);
-				if (kDown & KEY_RSTICK_LEFT) {
+					break;
+				case '\n': // Delete
 					if (name_letters > 0) {
 						printf("\x1b[8;27H%27c", ' ');
 						name_letters--;
 						temp_name[name_letters] = '\0';
 					}
-				}
-				if (kDown & KEY_LSTICK_RIGHT) {
+					break;
+				default:
 					if (name_letters < 7) {
-						temp_name[name_letters] = ' ';
-						name_letters++;
-					}
-				}
-				if (kDown & KEY_RSTICK_UP) {
-					temp_player = map.getPlayer(player_index);
-					temp_player.setName(temp_name);
-					map.modifyPlayer(player_index, temp_player);
-					keyboard.setCaps(true);
-					keyboard.setIndex(0);
-					player_index = 0;
-					// Letter selector
-					state = 3;
-					consoleClear();
-				}
-				if (keyboard.processKeyboard(player_index)) {
-					if (name_letters < 7) {
-						temp_name[name_letters] = keyboard.getCharacter(keyboard.getIndex());
+						temp_name[name_letters] = letter;
 						name_letters++;
 					}
 					else printf("\x1b[8;27H--Max name length reached--");
+					break;
 				}
-				else keyboard.printKeyboard();
-				break;
 			}
+			else keyboard.printKeyboard();
 			break;
 		case 3: // Choosing letter process
 			if (keyboard.getCaps()) keyboard.setKeyboard(keyboard_1);
@@ -238,7 +243,7 @@ int main(int argc, char **argv)
 			switch (player_index) {
 			case 0:
 				printf("\x1b[4;24H--Choose your letter Player 1--");
-				if (keyboard.processKeyboard(player_index)) {
+				if (keyboard.processKeyboard(key)) {
 					temp_player = map.getPlayer(player_index);
 					temp_player.setLetter(keyboard.getCharacter(keyboard.getIndex()));
 					map.modifyPlayer(player_index, temp_player);
@@ -250,7 +255,7 @@ int main(int argc, char **argv)
 				break;
 			default:
 				printf("\x1b[4;24H--Choose your letter Player 2--");
-				if (keyboard.processKeyboard(player_index)) {
+				if (keyboard.processKeyboard(key)) {
 					if (keyboard.getCharacter(keyboard.getIndex()) != temp_player.getLetter()) {
 						temp_player = map.getPlayer(player_index);
 						temp_player.setLetter(keyboard.getCharacter(keyboard.getIndex()));
@@ -275,7 +280,7 @@ int main(int argc, char **argv)
 				// Player turn
 				temp_player = map.getPlayer(player_index);
 
-				if (map.processGame(temp_player, special, inventory_index, kDown)) {
+				if (map.processGame(temp_player, special, inventory_index, key)) {
 					if (temp_player.getMoves() > 0) {
 						temp_player.setMoves(temp_player.getMoves() - 1);
 						map.modifyPlayer(player_index, temp_player);
@@ -319,7 +324,7 @@ int main(int argc, char **argv)
 			break;
 		}
 
-		if (kDown & KEY_PLUS) {
+		if ((kDown | kDown_P2) & EXIT) {
 			switch (state){
 			case 0: // Main menu
 				// Returns to HB menu
@@ -337,6 +342,7 @@ int main(int argc, char **argv)
 			case 4:
 				// Save Game
 				state = 0;
+				restart(map);
 				break;
 			default:
 				active = false;
@@ -344,11 +350,10 @@ int main(int argc, char **argv)
 			}
 		}
 
-		gfxFlushBuffers();
-		gfxSwapBuffers();
-		gfxWaitForVsync();
+		consoleUpdate(NULL);
 	}
 
-	gfxExit();
+	consoleExit(NULL);
+	hidMergeSingleJoyAsDualJoy((HidControllerID)0, (HidControllerID)1);
 	return 0;
 }

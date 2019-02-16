@@ -287,7 +287,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 	int position;
 
 	//Specials keys
-	if (((kDown & KEY_L) && player.getId() == 0) || ((kDown & KEY_R) && player.getId() == 1)) {
+	if (kDown & ACTION_1) {
 		switch (special) {
 		case 0:
 			special = 2;
@@ -325,7 +325,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 		}
 	}
 	// Open close inventory (ZL & ZR)
-	if ((!action) && (((kDown & KEY_ZL) && player.getId() == 0) || ((kDown & KEY_ZR) && player.getId() == 1))) {
+	if (kDown & ACTION_2) {
 		switch (special) {
 		case 0:
 			player.setInventoryChanged(true);
@@ -342,7 +342,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 	}
 	//Directions
 	// Up
-	if ((!action) && (((kDown & KEY_DUP) && player.getId() == 0) || ((kDown & KEY_X) && player.getId() == 1))) {
+	if (kDown & UP) {
 		switch (special) {
 		case 0:
 			movement = processMovement(player, DIR_UP);
@@ -370,7 +370,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 		}
 	}
 	// Down
-	if ((!action) && (((kDown & KEY_DDOWN) && player.getId() == 0) || ((kDown & KEY_B) && player.getId() == 1))) {
+	if (kDown & DOWN) {
 		switch (special) {
 		case 0:
 			movement = processMovement(player, DIR_DOWN);
@@ -398,7 +398,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 		}
 	}
 	// Left
-	if ((!action) && (((kDown & KEY_DLEFT) && player.getId() == 0) || ((kDown & KEY_Y) && player.getId() == 1))) {
+	if (kDown & LEFT) {
 		switch (special) {
 		case 0:
 			movement = processMovement(player, DIR_LEFT);
@@ -422,7 +422,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 		}
 	}
 	// Right
-	if ((!action) && (((kDown & KEY_DRIGHT) && player.getId() == 0) || ((kDown & KEY_A) && player.getId() == 1))) {
+	if (kDown & RIGHT) {
 		switch (special) {
 		case 0:
 			movement = processMovement(player, DIR_RIGHT);
