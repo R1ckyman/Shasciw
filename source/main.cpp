@@ -70,20 +70,7 @@ void printMenu(unsigned index) {
 void printWinner(const Player &player) {
 	unsigned i;
 
-	switch (player.getId()){
-	case 0:
-		printf(ANSI_COLOR_BOLDYELLOW);
-		break;
-	case 1:
-		printf(ANSI_COLOR_BOLDGREEN);
-		break;
-	case 2:
-		printf(ANSI_COLOR_BOLDMAGENTA);
-		break;
-	default:
-		printf(ANSI_COLOR_BOLDCYAN);
-		break;
-	}
+	player.printColor();
 	printf("\x1b[29;30H--- ");
 	for (i = 0;i < 8;i++) {
 		printf("%c", player.getName(i));
@@ -164,6 +151,10 @@ int main(int argc, char **argv)
 		u64 kDown_P2;
 		u64 kDown_P3;
 		u64 kDown_P4;
+		u64 kDown_P5;
+		u64 kDown_P6;
+		u64 kDown_P7;
+		u64 kDown_P8;
 
 		switch (joycons_controls)
 		{
@@ -171,16 +162,28 @@ int main(int argc, char **argv)
 			kDown_P2 = Input::getInputDown(1);
 			kDown_P3 = Input::getInputDown(0);
 			kDown_P4 = Input::getInputDown(1);
+			kDown_P5 = Input::getInputDown(0);
+			kDown_P6 = Input::getInputDown(1);
+			kDown_P7 = Input::getInputDown(0);
+			kDown_P8 = Input::getInputDown(1);
 			break;
 		case 1:
 			kDown_P2 = Input::getInputDown(1);
 			kDown_P3 = Input::getInputDown(2);
 			kDown_P4 = Input::getInputDown(3);
+			kDown_P5 = Input::getInputDown(4);
+			kDown_P6 = Input::getInputDown(5);
+			kDown_P7 = Input::getInputDown(6);
+			kDown_P8 = Input::getInputDown(7);
 			break;
 		default:
 			kDown_P2 = Input::getInputDown(0);
 			kDown_P3 = Input::getInputDown(0);
 			kDown_P4 = Input::getInputDown(0);
+			kDown_P5 = Input::getInputDown(0);
+			kDown_P6 = Input::getInputDown(0);
+			kDown_P7 = Input::getInputDown(0);
+			kDown_P8 = Input::getInputDown(0);
 			break;
 		}
 
@@ -195,8 +198,20 @@ int main(int argc, char **argv)
 		case 2:
 			key = kDown_P3;
 			break;
-		default:
+		case 3:
 			key = kDown_P4;
+			break;
+		case 4:
+			key = kDown_P5;
+			break;
+		case 5:
+			key = kDown_P6;
+			break;
+		case 6:
+			key = kDown_P7;
+			break;
+		default:
+			key = kDown_P8;
 			break;
 		}
 
@@ -385,7 +400,7 @@ int main(int argc, char **argv)
 					printMenu(0);
 					break;
 				case 1:
-					if(players < 4) players++;
+					if(players < 8) players++;
 					printSettings(settings_index, players, joycons_controls);
 					break;
 				case 2:

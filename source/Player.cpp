@@ -1,7 +1,9 @@
 #include "Player.h"
 #include <cstring>
 
-Player::Player(char name[8], int x, int y, unsigned id) {
+Player::Player(int x, int y, unsigned id) {
+	char name[8] = { 'P','l','a','y','e','r',' ','\0' };
+	name[6] = id + '1';
 	strcpy(this->name, name);
 	letter = id + '1';
 	this->x = x;
@@ -57,13 +59,7 @@ bool Player::addObject(unsigned object) {
 	}
 	return false;
 }
-void Player::printInfo() const {
-	printf("\x1b[10;60H" ANSI_COLOR_GREEN "->Moves: %u " ANSI_COLOR_RESET, moves + 1);
-}
-void Player::printStats() const {
-	printf("\x1b[7;2H| ----- Player %u ----- |", id+1);
-	// Player name
-	printf("\x1b[9;2HName: ");
+void Player::printColor() const {
 	switch (id) {
 	case 0:
 		printf(ANSI_COLOR_BOLDYELLOW);
@@ -74,10 +70,34 @@ void Player::printStats() const {
 	case 2:
 		printf(ANSI_COLOR_BOLDMAGENTA);
 		break;
-	default:
+	case 3:
 		printf(ANSI_COLOR_BOLDCYAN);
 		break;
+	case 4:
+		printf(ANSI_COLOR_BOLDRED);
+		break;
+	case 5:
+		printf(ANSI_COLOR_YELLOW);
+		break;
+	case 6:
+		printf(ANSI_COLOR_GREEN);
+		break;
+	case 7:
+		printf(ANSI_COLOR_RED);
+		break;
+	default:
+		printf(ANSI_COLOR_CYAN);
+		break;
 	}
+}
+void Player::printInfo() const {
+	printf("\x1b[10;60H" ANSI_COLOR_GREEN "->Moves: %u " ANSI_COLOR_RESET, moves + 1);
+}
+void Player::printStats() const {
+	printf("\x1b[7;2H| ----- Player %u ----- |", id+1);
+	// Player name
+	printf("\x1b[9;2HName: ");
+	printColor();
 	printf("%s        ", name);
 	// Healt
 	printf("\x1b[12;2H" ANSI_COLOR_BOLDRED "Healt: %d", healt);

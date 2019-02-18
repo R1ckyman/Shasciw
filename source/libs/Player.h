@@ -39,7 +39,7 @@ private:
 	bool inventory_changed;
 	void removeObject(unsigned object);
 public:
-	Player(char name[8], int x, int y, unsigned id);
+	Player(int x, int y, unsigned id);
 	char getLetter() const { return letter; };
 	int getHealt() const { return healt; };
 	unsigned getObject(unsigned index);
@@ -64,6 +64,7 @@ public:
 	void setDamage(unsigned damage);
 	void setLastMove(Dir last_move);
 	bool addObject(unsigned object);
+	void printColor() const;
 	void printInfo() const;
 	void printStats() const;
 	void printInventory(unsigned index = INVENTORY + 1) const;
