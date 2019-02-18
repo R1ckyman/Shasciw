@@ -9,12 +9,11 @@ Map::Map() {
 	playerCount = 4;
 	char name_1[8] = { 'P','l','a','y','e','r','1','\0' };
 	char name_2[8] = { 'P','l','a','y','e','r','2','\0' };
-	char name_3[8] = { 'P','l','a','y','e','r','3','\0' };
-	char name_4[8] = { 'P','l','a','y','e','r','4','\0' };
 	Player player_1(name_1, 1, 1, 0);
 	Player player_2(name_2, 30, 1, 1);
-	Player player_3(name_3, 1, 30, 2);
-	Player player_4(name_4, 30, 30, 3);
+	players.push_back(player_1);
+	players.push_back(player_2);
+
 	char map[MAPSIZE][MAPSIZE] = {
 	{'#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#','#'},
 	{'#',' ',' ',' ',' ',' ','#','o','#','o',' ',' ',' ','o','#','o','o','#','o',' ',' ',' ','o','#','o','#',' ',' ',' ',' ',' ','#'},
@@ -51,7 +50,7 @@ Map::Map() {
 	};
 	// Random class
 	std::mt19937 mt(time(NULL));
-	std::uniform_int_distribution<unsigned> distribution(0, 6);
+	std::uniform_int_distribution<unsigned> distribution(0, 7);
 	for (i = 0;i < MAPSIZE;i++) {
 		for (y = 0;y < MAPSIZE;y++) {
 			terrain[i][y] = map[i][y];
@@ -66,47 +65,43 @@ Map::Map() {
 			}
 		}
 	}
-
-	players.push_back(player_1);
-	players.push_back(player_2);
-	players.push_back(player_3);
-	players.push_back(player_4);
 }
-void Map::modifyPlayer(unsigned player_index, Player player) {
-	switch (player_index)
-	{
-	case 0:
-		players[0] = player;
-		break;
-	case 1:
-		players[1] = player;
-		break;
-	case 2:
-		players[2] = player;
-		break;
-	default:
-		players[3] = player;
-		break;
+void Map::removePlayer(unsigned player) {
+	for (unsigned i = 0;i < players.size();i++) {
+		if (i == player) {
+			terrain[players[i].getY()][players[i].getX()] = ' ';
+			printf("\x1b[%d;%dH ", players[i].getY() + MAP_Y, players[i].getX() + MAP_X);
+			players.erase(players.begin() + i);
+			break;
+		}
 	}
+}
+
+void Map::modifyPlayer(unsigned player_index, Player player) {
+	players[player_index] = player;
 }
 void Map::modifyBullet(unsigned position, Bullet bullet) {
 	bullets[position] = bullet;
 }
-Player Map::getPlayer(unsigned player) const {
-	switch (player){
-	case 0:
-		return players[0];
-		break;
-	case 1:
-		return players[1];
-		break;
-	case 2:
-		return players[2];
-		break;
+void Map::setPlayers(unsigned playerCount) {
+	char name_3[8] = { 'P','l','a','y','e','r','3','\0' };
+	char name_4[8] = { 'P','l','a','y','e','r','4','\0' };
+	Player player_3(name_3, 1, 30, 2);
+	Player player_4(name_4, 30, 30, 3);
+
+	this->playerCount = playerCount;
+	switch (playerCount)
+	{
+	case 4:
+	case 3:
+		players.push_back(player_3);
+		players.push_back(player_4);
 	default:
-		return players[3];
 		break;
 	}
+}
+Player Map::getPlayer(unsigned player) const {
+	return players[player];
 }
 int Map::getDoorPosition(unsigned x, unsigned y) const {
 	unsigned i;
@@ -171,6 +166,7 @@ void Map::printMapOptimized(Player player) {
 		printf("\x1b[%d;%dH%c", player.getY() + MAP_Y, player.getX() + MAP_X, player.getLetter());
 		break;
 	}
+
 	// Bullet control
 	printf(ANSI_COLOR_BOLDRED);
 	for (i = 0;i < bullets.size();i++) {
@@ -182,6 +178,7 @@ void Map::printMapOptimized(Player player) {
 			printf("\x1b[%d;%dH*", bullets[i].getY() + MAP_Y, bullets[i].getX() + MAP_X);
 		}
 	}
+	
 	printf(ANSI_COLOR_MAGENTA);
 	//Door control
 	for (i = 0;i < doors.size();i++) {
@@ -202,15 +199,15 @@ void Map::printMapFull(Player player) {
 	unsigned i;
 	unsigned y;
 
-	terrain[player.getY()][player.getX()] = player.getLetter();
+	for (i = 0; i < players.size();i++) terrain[players[i].getY()][players[i].getX()] = players[i].getLetter();
 
 	for (i = 0;i < MAPSIZE;i++) {
 		printf("\x1b[%d;%dH", i + MAP_Y, MAP_X);
 		for (y = 0;y < MAPSIZE;y++) {
 			if (i == players[0].getY() && y == players[0].getX()) printf(ANSI_COLOR_BOLDYELLOW "%c" ANSI_COLOR_RESET, players[0].getLetter());
 			else if (i == players[1].getY() && y == players[1].getX()) printf(ANSI_COLOR_BOLDGREEN "%c" ANSI_COLOR_RESET, players[1].getLetter());
-			else if (i == players[2].getY() && y == players[2].getX()) printf(ANSI_COLOR_BOLDMAGENTA "%c" ANSI_COLOR_RESET, players[1].getLetter());
-			else if (i == players[3].getY() && y == players[3].getX()) printf(ANSI_COLOR_BOLDCYAN "%c" ANSI_COLOR_RESET, players[1].getLetter());
+			else if (playerCount >= 2 && i == players[2].getY() && y == players[2].getX()) printf(ANSI_COLOR_BOLDMAGENTA "%c" ANSI_COLOR_RESET, players[2].getLetter());
+			else if (playerCount >= 3 && i == players[3].getY() && y == players[3].getX()) printf(ANSI_COLOR_BOLDCYAN "%c" ANSI_COLOR_RESET, players[3].getLetter());
 			else if (terrain[i][y] == 'O' || terrain[i][y] == 'o') printf(ANSI_COLOR_CYAN "%c" ANSI_COLOR_RESET, terrain[i][y]);
 			else if (terrain[i][y] == 'D') printf(ANSI_COLOR_MAGENTA "%c" ANSI_COLOR_RESET, terrain[i][y]);
 			else printf("%c", terrain[i][y]);
@@ -324,24 +321,27 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 		case 1:
 			switch (player.getObject(index)) {
 			case 0:
-				player.setMoves(player.getMoves() + 1);
-				break;
-			case 1:
 				player.setMoves(player.getMoves() + 2);
 				break;
-			case 2:
+			case 1:
 				player.setMoves(player.getMoves() + 3);
+				break;
+			case 2:
+				player.setMoves(player.getMoves() + 4);
 				break;
 			case 3:
 				player.setMaxMoves(player.getMaxMoves() + 1);
 				break;
 			case 4:
-				player.setDamage(player.getDamage() + 1);
+				player.setMaxMoves(player.getMaxMoves() + 2);
 				break;
 			case 5:
-				player.setHealt(player.getHealt() + 1);
+				player.setDamage(player.getDamage() + 1);
 				break;
 			case 6:
+				player.setHealt(player.getHealt() + 1);
+				break;
+			case 7:
 				player.setHealt(player.getHealt() + 2);
 				break;
 			default:
@@ -481,6 +481,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 
 	if (player.getInventoryChanged()) {
 		player.setInventoryChanged(false);
+		if (special == 0) index = 11;
 		player.printInventory(index);
 	}
 	if (player.getStatsChanged()) {
@@ -509,8 +510,7 @@ bool Map::processGame(Player &player, int &special, unsigned &index, u64 kDown) 
 void Map::playerHit(unsigned player, const Bullet &bullet) {
 	Player temp_player = players[0];
 	
-	switch (player)
-	{
+	switch (player) {
 	case 0:
 		temp_player = players[0];
 		break;
@@ -530,9 +530,8 @@ void Map::playerHit(unsigned player, const Bullet &bullet) {
 	modifyPlayer(player, temp_player);
 }
 bool Map::bulletHit(const Bullet &bullet, Dir dir) {
-	for(unsigned i = 0; i < playerCount; i++)
-		switch (dir)
-		{
+	for(unsigned i = 0; i < players.size(); i++)
+		switch (dir) {
 		case DIR_UP:
 			if (bullet.getY() - 1 == players[i].getY() && bullet.getX() == players[i].getX()) {
 				playerHit(i, bullet);
@@ -558,7 +557,7 @@ bool Map::bulletHit(const Bullet &bullet, Dir dir) {
 			}
 			break;
 		case DIR_NULL:
-			if (bullet.getPlayer() != i && bullet.getY() == players[i].getY() && bullet.getX() == players[i].getX()) {
+			if (bullet.getPlayer() != players[i].getId() && bullet.getY() == players[i].getY() && bullet.getX() == players[i].getX()) {
 				playerHit(i, bullet);
 				return true;
 			}
@@ -569,7 +568,6 @@ bool Map::bulletHit(const Bullet &bullet, Dir dir) {
 		}
 	return false;
 }
-
 bool Map::processBullet(unsigned i, Bullet bullet) {
 	if (bulletHit(bullet, DIR_NULL)) return true;
 	if (terrain[bullet.getY()][bullet.getX()] == ' ') printf("\x1b[%d;%dH ", bullet.getY() + MAP_Y, bullet.getX() + MAP_X);

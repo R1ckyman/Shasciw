@@ -12,6 +12,7 @@
 #define RIGHT			(KEY_DDOWN	| KEY_X)
 #define SPECIAL_1		(KEY_L		| KEY_R)
 #define SPECIAL_2		(KEY_ZL		| KEY_ZR)
+
 class Input {
 public:
 	static u64 getInputDown(unsigned player) { 

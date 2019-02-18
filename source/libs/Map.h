@@ -27,9 +27,11 @@ public:
 	Map();
 	void printMapFull(Player player);
 	void printMapOptimized(Player player);
-	unsigned getPlayers() const { return playerCount; };
+	unsigned getPlayers() const { return players.size()-1; };
+	void setPlayers(unsigned playerCount);
 	Player getPlayer(unsigned player) const;
 	Object getObject(unsigned i) const { return objects[i]; };
+	void removePlayer(unsigned player);
 	void modifyPlayer(unsigned player_index, Player player);
 	void modifyBullet(unsigned position, Bullet bullet);
 	bool processMovement(Player &player, Dir dir);
