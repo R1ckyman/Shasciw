@@ -4,15 +4,15 @@ Shasciw
 ===============
 ## Game info:
 
-* ASCII text game for 2 players (4 or more in the future) 
+* ASCII shooter game for up to 8 players
 * The objective is to eliminate the others player (or enemy team in the future).
 * Turn based game, with special objects to help you.
 * Objects which upgrades players stats.
 
 ## TODO:
 
-* Then make it up 4 players atm.
-* Add a team selector and more players.
+* Add settings.ini
+* Add a team selector.
 * Add save/load game.
 
 ## Controls
