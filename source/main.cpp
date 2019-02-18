@@ -236,6 +236,7 @@ int main(int argc, char **argv)
 					break;
 				case 1: // Name selector
 					consoleClear();
+					map.setPlayers(players);
 					state = 2;
 					break;
 				case 2: // Load Game
@@ -328,7 +329,6 @@ int main(int argc, char **argv)
 				else {
 					player_index = 0;
 					consoleClear();
-					map.setPlayers(players);
 					map.printMapFull(map.getPlayer(player_index));
 					// Game process
 					state = 4;
@@ -345,8 +345,16 @@ int main(int argc, char **argv)
 			if (map.getPlayers() > 0) {
 				for (i = 0; i <= map.getPlayers();i++) {
 					if (map.getPlayer(i).getHealt() <= 0) {
-						if (player_index > 0 && i < map.getPlayers()) player_index--;
-						map.removePlayer(i);
+						if (map.getPlayer(i).getMaxMoves() != map.getPlayer(i).getMoves()) {
+							map.removePlayer(i);
+							map.getPlayer(player_index).printStats();
+							map.getPlayer(player_index).printInfo();
+							map.getPlayer(player_index).printInventory();
+						}
+						else {
+							if (player_index > 0 && i < map.getPlayers()) player_index--;
+							map.removePlayer(i);
+						}
 					}
 				}
 				temp_player = map.getPlayer(player_index);
