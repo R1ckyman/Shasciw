@@ -3,12 +3,12 @@
 
 Player::Player(char name[8], int x, int y, unsigned id) {
 	strcpy(this->name, name);
-	letter = id + '0';
+	letter = id + '1';
 	this->x = x;
 	this->y = y;
-	healt = 5;
-	moves = 4;
-	maxMoves = 4;
+	healt = 4;
+	moves = 5;
+	maxMoves = 5;
 	damage = 1;
 	last_move = DIR_NULL;
 	this->id = id;
@@ -58,7 +58,7 @@ bool Player::addObject(unsigned object) {
 	return false;
 }
 void Player::printInfo() const {
-	printf("\x1b[10;60H" ANSI_COLOR_GREEN "->Moves: %u" ANSI_COLOR_RESET, moves + 1);
+	printf("\x1b[10;60H" ANSI_COLOR_GREEN "->Moves: %u " ANSI_COLOR_RESET, moves + 1);
 }
 void Player::printStats() const {
 	printf("\x1b[7;2H| ----- Player %u ----- |", id+1);
@@ -71,11 +71,14 @@ void Player::printStats() const {
 	case 1:
 		printf(ANSI_COLOR_BOLDGREEN);
 		break;
+	case 2:
+		printf(ANSI_COLOR_BOLDMAGENTA);
+		break;
 	default:
-		printf(ANSI_COLOR_BOLDYELLOW);
+		printf(ANSI_COLOR_BOLDCYAN);
 		break;
 	}
-	printf("%s" ANSI_COLOR_RESET, name);
+	printf("%s        ", name);
 	// Healt
 	printf("\x1b[12;2H" ANSI_COLOR_BOLDRED "Healt: %d", healt);
 	// Damage
@@ -103,7 +106,7 @@ void Player::printInventory(unsigned index) const {
 			if (i == index) printf(ANSI_COLOR_BOLDRED);
 			switch (inventory[i]) {
 			case 0:
-				printf("-Add 2 move      ");
+				printf("-Add 2 moves      ");
 				break;
 			case 1:
 				printf("-Add 3 moves     ");
@@ -115,12 +118,15 @@ void Player::printInventory(unsigned index) const {
 				printf("-[P] Add 1 move  ");
 				break;
 			case 4:
-				printf("-[P] Add 1 damage");
+				printf("-[P] Add 2 moves  ");
 				break;
 			case 5:
-				printf("-[P] Add 1 health");
+				printf("-[P] Add 1 damage");
 				break;
 			case 6:
+				printf("-[P] Add 1 health");
+				break;
+			case 7:
 				printf("-[P] Add 2 healt");
 				break;
 			default:
