@@ -24,31 +24,29 @@ void printControls() {
 	printf("\x1b[38;3H-SR to use an object and SR to open inventory");
 }
 void printSettings(unsigned index, unsigned players, unsigned joycons) {
-	if (index == 0) printf(ANSI_COLOR_BOLDYELLOW);
-	else printf(ANSI_COLOR_YELLOW);
+	if (index == 0) printf(ANSI_COLOR_WHITE);
 	printf("\x1b[3;27HSave and return (+, -)" ANSI_COLOR_RESET);
-	printf(ANSI_COLOR_CYAN "\x1b[5;32HPlayers: %d" ANSI_COLOR_RESET, players);
+
+	printf(ANSI_COLOR_CYAN "\x1b[6;27HPlayers: " ANSI_COLOR_BOLDCYAN "%d" ANSI_COLOR_RESET, players);
 	if (index == 1) printf(ANSI_COLOR_BOLDGREEN);
 	else printf(ANSI_COLOR_GREEN);
-	printf("\x1b[7;27HAdd player" ANSI_COLOR_RESET);
+	printf("\x1b[8;30HAdd player" ANSI_COLOR_RESET);
 	if (index == 2) printf(ANSI_COLOR_BOLDRED);
 	else printf(ANSI_COLOR_RED);
-	printf("\x1b[9;27HRemove player" ANSI_COLOR_RESET);
+	printf("\x1b[10;30HRemove player" ANSI_COLOR_RESET);
+
 	if (index == 3) printf(ANSI_COLOR_BOLDMAGENTA);
 	else printf(ANSI_COLOR_MAGENTA);
-	printf("\x1b[12;27HChange controls" ANSI_COLOR_RESET);
-	switch (joycons)
-	{
-	case 0:
-		printf(ANSI_COLOR_WHITE "\x1b[14;32H2 joycons for all  " ANSI_COLOR_RESET);
-		break;
-	case 1:
-		printf(ANSI_COLOR_WHITE "\x1b[14;32H1 joycon per player" ANSI_COLOR_RESET);
-		break;
-	default:
-		printf(ANSI_COLOR_WHITE "\x1b[14;32H1 joycon for all   " ANSI_COLOR_RESET);
-		break;
-	}
+	printf("\x1b[13;27HChange controls" ANSI_COLOR_RESET);
+	if (joycons == 0) printf(ANSI_COLOR_BOLDYELLOW);
+	else printf(ANSI_COLOR_YELLOW);
+	printf("\x1b[15;30H2 joycons for all" ANSI_COLOR_RESET);
+	if (joycons == 1) printf(ANSI_COLOR_BOLDYELLOW);
+	else printf(ANSI_COLOR_YELLOW);
+	printf("\x1b[17;30H1 joycon per player" ANSI_COLOR_RESET);
+	if (joycons == 2) printf(ANSI_COLOR_BOLDYELLOW);
+	else printf(ANSI_COLOR_YELLOW);
+	printf("\x1b[19;30H1 joycon for all" ANSI_COLOR_RESET);
 }
 void printMenu(unsigned index) {
 	if (index == 0) printf(ANSI_COLOR_BOLDRED);
