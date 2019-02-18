@@ -1,6 +1,6 @@
 Shasciw
 ===============
-![Game](https://github.com/R1ckyman/Shasciw/blob/master/res/Shasciw_WIP.png)
+![Game](https://github.com/R1ckyman/Shasciw/blob/master/res/Shasciw_WIP_v1.7.0.jpg)
 ===============
 ## Game info:
 
